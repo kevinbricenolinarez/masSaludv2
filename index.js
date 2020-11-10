@@ -48,5 +48,25 @@ app.get('/medicos/listarMedicos', function (req, res) {
         {rut:"18", nombre: "Marselo"},
     ]
 
-    res.render('listarMedicos.hbs', { medicos });
+    res.render('listarMedicos.hbs', { medico1:medicos[0] });
 });
+
+app.get('/proveedores/agregarProveedor', function(req, res) {
+    res.render('agregarProveedor.hbs');
+});
+
+app.get('/proveedores/listarProveedores', function(req, res) {
+
+    let proveedores = [
+        {id:"01", nombre:"Cofar"},
+        {id:"02", nombre:"Bago"}
+
+    ]
+    res.render('listarProveedores.hbs', {proveedores});
+});
+
+//app.get('/')
+
+
+
+
