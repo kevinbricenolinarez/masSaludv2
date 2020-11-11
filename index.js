@@ -65,7 +65,9 @@ app.get('/proveedores/listarProveedores', function(req, res) {
     res.render('listarProveedores.hbs', {proveedores});
 });
 
-//app.get('/')
+app.get('/proveedores/stock', function(req, res) {
+    res.render('stock.hbs');
+})
 
 
 
