@@ -1,0 +1,216 @@
+create schema farmacia;
+use farmacia;
+
+#RELACION SUCURSAL - TRABAJA
+
+create table MUNICIPIO(
+
+IdMuni int not null,
+NombreMunic varchar(255),
+primary key(IdMuni)
+);
+
+create table SUCURSAL(
+
+IdSucursal int not null,
+IdMuni_s int not null,
+NombreSucursal varchar(255),
+primary key(IdSucursal, IdMuni_s),
+foreign key(IdMuni_s) references MUNICIPIO(IdMuni)
+);
+
+#RELACION VENTAS INICIO
+
+create table QUIMICOFARMAC(
+RutQuimic int not null,
+NomQuimic varchar(255),
+primary key(RutQuimic)
+);
+
+create table TRABAJA(
+IdSucursal_t int not null,
+RutQuimic_t int not null,
+primary key(IdSucursal_t, RutQuimic_t),
+foreign key(IdSucursal_t) references SUCURSAL(IdSucursal),
+foreign key(RutQuimic_t) references QUIMICOFARMAC(RutQuimic)
+);
+
+create table PERSONA(
+RutPer int not null,
+NomPer varchar(255),
+primary key(RutPer)
+);
+
+create table ENROLADO(
+
+FechaEnrolamiento date not null,
+RutPer_e int not null,
+IdMuni_e int not null,
+primary key(FechaEnrolamiento, RutPer_e, IdMuni_e),
+foreign key(RutPer_e) references PERSONA(RutPer),
+foreign key(IdMuni_e) references MUNICIPIO(IdMuni)
+);
+
+create table REPRESENTA(
+RutCli int not null,
+RutPac int not null,
+primary key(RutCli, RutPac),
+foreign key(RutCli) references PERSONA(RutPer),
+foreign key(RutPac) references PERSONA(RutPer)
+);
+
+create table DESCUENTO(
+AplicSN varchar(255),
+primary key(AplicSN)
+);
+
+create table MEDICAMENTO(
+
+IdMed int not null,
+NomMed varchar(255),
+primary key(IdMed)
+);
+
+create table PRESENTACION(
+
+TipoPresentacion varchar(255) not null,
+primary key(TipoPresentacion)
+);
+
+create table FORMATO(
+
+TipoFormato varchar(255) not null,
+Descripcion varchar(255) not null,
+primary key(TipoFormato)
+);
+
+#RELACION VENTAS FINAL
+
+create table VENTAS(
+
+FechaVenta date not null,
+HoraVenta time not null,
+TipoVenta varchar(20),
+TipoPresentacion_v varchar(20) not null,
+AplicSN_v varchar(20) not null,
+IdMed_v int not null,
+RutPer_v int not null,
+TipoFormato_v varchar(20) not null,
+primary key(HoraVenta, TipoVenta, TipoPresentacion_v, AplicSN_v, IdMed_v, RutPer_v, TipoFormato_v),
+foreign key(TipoPresentacion_v) references PRESENTACION(TipoPresentacion),
+foreign key(AplicSN_v) references DESCUENTO(AplicSN),
+foreign key(IdMed_v) references MEDICAMENTO(IdMed),
+foreign key(RutPer_v) references PERSONA(RutPer),
+foreign key(TipoFormato_v) references FORMATO(TipoFormato)
+);
+
+#RELACION LISTAPRECIO
+
+create table LISTAPRECIO(
+
+Pedido int not null,
+TipoFormato_l varchar(255),
+AplicSN_l varchar(255),
+TipoPresentacion_l varchar(255),
+IdMed_l int not null,
+primary key(TipoFormato_l, AplicSN_l, TipoPresentacion_l, IdMed_l),
+foreign key(TipoFormato_l) references FORMATO(TipoFormato),
+foreign key(AplicSN_l) references DESCUENTO(AplicSN),
+foreign key(TipoPresentacion_l) references PRESENTACION(TipoPresentacion),
+foreign key(IdMed_l) references MEDICAMENTO(IdMed)
+);
+
+create table TIPOMEDIC(
+
+TipoMedic varchar(255) not null,
+primary key(TipoMedic)
+);
+
+#RELACION TIENE
+
+create table TIENE(
+
+IdMed_t int not null,
+TipoMedic_t varchar(255),
+primary key(IdMed_t, TipoMedic_t),
+foreign key(IdMed_t) references MEDICAMENTO(IdMed),
+foreign key(TipoMedic_t) references TIPOMEDIC(TipoMedic)
+);
+
+#RELACION VENCIMIENTO
+
+create table PROVEEDOR(
+
+IdProv int not null,
+NomLab varchar(255) not null,
+primary key(IdProv, NomLab)
+);
+
+create table LOTE(
+
+IdLote int not null,
+IdProv_l int not null,
+primary key(IdLote, IdProv_l),
+foreign key(IdProv_l) references PROVEEDOR(IdProv)
+);
+
+create table VENCIMIENTO(
+
+FechaVencimiento date not null,
+Unidades int,
+IdLote_v int not null,
+IdProv_v int not null,
+primary key (FechaVencimiento, IdLote_v, IdProv_v),
+foreign key(IdLote_v) references LOTE(IdLote),
+foreign key(IdProv_v) references PROVEEDOR(IdProv)
+);
+
+#RELACION STOCK
+
+create table STOCK(
+
+Cantidad int not null,
+FechaLlegadaStock date not null,
+TipoPresentacion_s varchar(20) not null,
+IdMed_s int not null,
+TipoFormato_s varchar(20) not null,
+IdLote_s int not null,
+IdProv_s int not null,
+primary key(FechaLlegadaStock, TipoPresentacion_s, IdMed_s, TipoFormato_s, IdLote_s, IdProv_s),
+foreign key(TipoPresentacion_s) references PRESENTACION(TipoPresentacion),
+foreign key(IdMed_s) references MEDICAMENTO(IdMed),
+foreign key(TipoFormato_s) references FORMATO(TipoFormato),
+foreign key(IdLote_s) references LOTE(IdLote),
+foreign key(IdProv_s) references PROVEEDOR(IdProv)
+);
+
+#RELACION EMISION
+
+create table MEDICO(
+
+RutMed int not null,
+NomMed_m varchar(255),
+primary key(RutMed, NomMed_m)
+);
+
+create table RECETA(
+
+NumSerie int not null,
+primary key(NumSerie)
+);
+
+create table EMISION(
+
+dosis varchar(255),
+periodicidad varchar(255),
+RutMed_e int not null,
+NumSerie_e int not null,
+RutPer_e int not null,
+primary key(RutMed_e, NumSerie_e,RutPer_e),
+foreign key(RutMed_e) references MEDICO(RutMed),
+foreign key(NumSerie_e) references RECETA(NumSerie),
+foreign key(RutPer_e) references PERSONA(RutPer)
+);
+
+
+

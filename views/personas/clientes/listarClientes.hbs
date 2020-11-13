@@ -1,7 +1,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-12">
-            <h1 class="page-header">Listado Médicos</h1>
+            <h1 class="page-header">Listado Clientes</h1>
         </div>
         <!-- /.col-lg-12 -->
     </div>
@@ -20,17 +20,20 @@
                                 <tr>
                                     <th>RUT</th>
                                     <th>Nombre</th>
+                                    <th>Acción</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {{#each medicos}}
+                                {{#each clientes}}
                                 <tr class="odd gradeX">
-                                    <td>{{rut}}</td>
-                                    <td>{{nombre}}</td>
+                                    <td>{{RutPer}}</td>
+                                    <td>{{NomPer}}</td>
+                                    <td>
+                                        <a class="btn btn-primary" href="/clientes/editar/{{RutPer}}">Editar</a>
+                                        <a class="btn btn-danger" href="/clientes/eliminar/{{RutPer}}">Eliminar</a>
+                                    </td>
                                 </tr>
                                 {{/each}}
-
-                             
                             </tbody>
                         </table>
                     </div>
