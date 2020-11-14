@@ -44,150 +44,161 @@ app.listen(app.get('port'), () => {
     console.log('Server on port', app.get('port'));
 })
 
-// RUTAS ///////////////////////////////
+// RUTAS ///////////////////////////////////////////////////////////////////////////////
+
+// MAIN /////////////////////////////////////////////////
+// DASHBOARD [GET]
 app.get('/', function (req, res) {
     res.render('dashboard.hbs');
 });
 
-// CLIENTES
+// CLIENTES /////////////////////////////////////////////////
+// AGREGAR CLIENTE [GET]
 app.get('/clientes/agregarCliente', function (req, res) {
     res.render('personas/clientes/agregarCliente.hbs');
 });
 
+// AGREGAR CLIENTES [POST]
 app.post('/clientes/agregarCliente', function (req, res) {
-
     connection.query("insert into PERSONA (RutPer, NomPer) values (" + req.body.rut + ", '" + req.body.nombre + "');", function(error, respuesta, fields) {
         if (error) {throw error};
         console.log("Agregado el cliente");
-
         res.redirect('/clientes/listarClientes');
     })
-
 });
 
+// LISTAR CLIENTES [GET]
 app.get('/clientes/listarClientes', function (req, res) {
-
     connection.query('SELECT * FROM Persona', function(error, clientes, fields) {
         if (error) {throw error};
         console.log("The solution is: ", clientes);
-
         res.render('personas/clientes/listarClientes.hbs', { clientes });
     })
-
 });
 
+// EDITAR CLIENTE [GET]
 app.get('/clientes/editar/:RutPer', function(req, res) {
-
     let rutPersona = req.params.RutPer;
-
     connection.query('SELECT * FROM Persona WHERE RutPer = ' + rutPersona, function(error, respuesta, fields) {
         if (error) {throw error};
         console.log("Encontrado el cliente");
-
         clienteEncontrado = respuesta[0];
-
-        res.render('personas/clientes/agregarCliente.hbs', { rut: clienteEncontrado.RutPer, nombre: clienteEncontrado.NomPer });
+        res.render('personas/clientes/actualizarCliente.hbs', { rut: clienteEncontrado.RutPer, nombre: clienteEncontrado.NomPer });
     })
 })
 
+// ACTUALIZAR CLIENTE [POST]
+app.post('/clientes/editar', function (req, res) {
+    connection.query("UPDATE PERSONA SET NomPer = '" + req.body.nombre + "' WHERE RutPer = " + req.body.rut + ";", function(error, respuesta, fields) {
+        if (error) {throw error};
+        console.log("Actualizado el cliente");
+        res.redirect('/clientes/listarClientes');
+    })
+});
+
+// ELIMINAR CLIENTE [GET]
 app.get('/clientes/eliminar/:RutPer', function(req, res) {
-
     let rutPersona = req.params.RutPer;
-
-    // CRUD - CREATE - READ - UPDATE - DELETE
-
     connection.query('DELETE FROM Persona WHERE RutPer = ' + rutPersona, function(error, respuesta, fields) {
         if (error) {throw error};
         console.log("Eliminado el cliente");
-
         res.redirect('/clientes/listarClientes');
     })
 })
+/////////////////////////////////////////////////////////////
 
-// QUÍMICO FARMACEUTICO
+// QUÍMICOS FARMACEUTICOS /////////////////////////////////////////////////
+// AGREGAR QUÍMICO FARMACEUTICO [GET]
 app.get('/quimicos/agregarQuimicoFarm', function (req, res) {
     res.render('personas/quimicos/agregarQuimicoFarm.hbs');
 });
 
+// AGREGAR QUÍMICOS FARMACEUTICOS [POST]
+app.post('/quimicos/agregarQuimicoFarm', function (req, res) {
+    connection.query("insert into QUIMICOFARMAC (RutQuimic, NomQuimic) values (" + req.body.rut + ", '" + req.body.nombre + "');", function(error, respuesta, fields) {
+        if (error) {throw error};
+        console.log("Agregado el químico");
+        res.redirect('/quimicos/listarQuimicos');
+    })
+});
+
+// LISTAR QUÍMICOS FARMACEUTICOS [GET]
 app.get('/quimicos/listarQuimicos', function (req, res) {
-
-    let quimicos = [
-        {rut:"26", nombre: "Vettel"},
-        {rut:"18", nombre: "Albon"},
-    ]
-    
-    res.render('personas/quimicos/listarQuimicos.hbs', { quimicos });
+    connection.query('SELECT * FROM QUIMICOFARMAC', function(error, quimicos, fields) {
+        if (error) {throw error};
+        console.log("The solution is: ", quimicos);
+        res.render('personas/quimicos/listarQuimicos.hbs', { quimicos });
+    })
 });
 
-// MEDICOS
-app.get('/medicos/listarMedicos', function (req, res) {
-
-    let medicos = [
-        {rut:"26", nombre: "Bottas", especialidad: "Otorrino"},
-        {rut:"18", nombre: "Hamilton", especialidad: "Superheroe"},
-    ]
-
-<<<<<<< HEAD
-    res.render('listarMedicos.hbs', { medico1:medicos[0] });
-});
-
-app.get('/proveedores/agregarProveedor', function(req, res) {
-    res.render('agregarProveedor.hbs');
-});
-
-app.get('/proveedores/listarProveedores', function(req, res) {
-
-    let proveedores = [
-        {id:"01", nombre:"Cofar"},
-        {id:"02", nombre:"Bago"}
-
-    ]
-    res.render('listarProveedores.hbs', {proveedores});
-});
-
-app.get('/proveedores/stock', function(req, res) {
-    res.render('stock.hbs');
+// ELIMINAR CLIENTE [GET]
+app.get('/quimicos/eliminar/:RutQuimic', function(req, res) {
+    let rutQuimico = req.params.RutQuimic;
+    connection.query('DELETE FROM QUIMICOFARMAC WHERE RutQuimic = ' + rutQuimico, function(error, respuesta, fields) {
+        if (error) {throw error};
+        console.log("Eliminado el químico");
+        res.redirect('/quimicos/listarQuimicos');
+    })
 })
+/////////////////////////////////////////////////////////////
 
-
-
-
-=======
-    res.render('personas/medicos/listarMedicos.hbs', { medicos });
-});
-
+// MEDICOS ////////////////////////////////////////////////////////////////
+// AGREGAR MEDICO [GET]
 app.get('/medicos/agregarMedico', function (req, res) {
     res.render('personas/medicos/agregarMedico.hbs');
 });
 
-// VENTAS
-app.get('/ventas/agregarVenta', async function (req, res) {
-
-    let medicamentos = await connection.query('SELECT * FROM Medicamento');
-    console.log(medicamentos)
-
-    res.render('ventas/agregarVenta.hbs', { medicamentos });
+// LISTAR MEDICOS [GET]
+app.get('/medicos/listarMedicos', function (req, res) {
+    let medicos = [
+        {rut:"26", nombre: "Bottas", especialidad: "Otorrino"},
+        {rut:"18", nombre: "Hamilton", especialidad: "Superheroe"},
+    ]
+    res.render('personas/medicos/listarMedicos.hbs', { medicos });
 });
 
-// MEDICAMENTOS
-app.get('/ventas/agregarMedicamento', function (req, res) {
+// VENTAS ////////////////////////////////////////////////////////////////
+// AGREGAR VENTA [GET]
+app.get('/ventas/agregarVenta', async function (req, res) {
+
+    connection.query('SELECT * FROM MEDICAMENTO', async function(error, medicamentos, fields) {
+        console.log(medicamentos);
+
+        let formatos = await connection.query('SELECT * FROM FORMATO');
+        //formatos = await formatos.
+        console.log("FORMATOS: ", formatos);
+
+        res.render('ventas/agregarVenta.hbs', { medicamentos });
+    });
+
+});
+
+// LISTAR VENTAS [GET]
+app.get('/ventas/listarVentas', async function (req, res) {
+    let ventas = await connection.query('SELECT * FROM Venta');
+    console.log(ventas)
+    res.render('ventas/listarVentas.hbs', { ventas });
+});
+
+// MEDICAMENTOS ////////////////////////////////////////////////////////////////
+// AGREGAR MEDICAMENTO [GET]
+app.get('/medicamentos/agregarMedicamento', function (req, res) {
     res.render('agregarMedicamento.hbs');
 });
 
-app.get('/ventas/listarMedicamentos', function (req, res) {
+// LISTAR MEDICAMENTOS [GET]
+app.get('/medicamentos/listarMedicamentos', function (req, res) {
     res.render('listarMedicamentos.hbs');
 });
 
-// PRECIOS
+// PRECIOS ////////////////////////////////////////////////////////////////
+// AGREGAR PRECIO [GET]
 app.get('/precios/agregarPrecio', function (req, res) {
     res.render('agregarPrecio.hbs');
 });
 
+// LISTAR PRECIOS [GET]
 app.get('/precios/listarPrecios', function (req, res) {
-
     let precios = [ { idMedicamento: "01" } ]
-
     res.render('listarPrecios.hbs', { precios } );
-    
 });
->>>>>>> main

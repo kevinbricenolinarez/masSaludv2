@@ -8,6 +8,10 @@ body {
     background-color: #f8f8f8;
 }
 
+.done {
+    color: #5cb85c;
+}
+
 #wrapper {
     width: 100%;
 }

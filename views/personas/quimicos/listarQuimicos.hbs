@@ -26,11 +26,11 @@
                             <tbody>
                                 {{#each quimicos}}
                                 <tr class="odd gradeX">
-                                    <td>{{rut}}</td>
-                                    <td>{{nombre}}</td>
+                                    <td>{{RutQuimic}}</td>
+                                    <td>{{NomQuimic}}</td>
                                     <td>
-                                        <button class="btn btn-primary" onclick="editarRegistro('{{rut}}')">Editar</button>
-                                        <button class="btn btn-danger" onclick="eliminarRegistro('{{rut}}')">Eliminar</button>
+                                        <a class="btn btn-primary" href="/quimicos/editar/{{RutQuimic}}">Editar</a>
+                                        <a class="btn btn-danger" href="/quimicos/eliminar/{{RutQuimic}}">Eliminar</a>
                                     </td>
                                 </tr>
                                 {{/each}}

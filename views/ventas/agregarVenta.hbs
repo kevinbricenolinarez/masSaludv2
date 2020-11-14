@@ -35,18 +35,50 @@
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-3">
                                         <div class="form-group">
-                                            <label>Nombre de medicamento</label>
-                                            <select class="form-control" id="cliNombre" maxlength="20" required></select>
-                                                <option value="{{IdMed}}">{{NomMed}}</option></option>
+                                            <label>Nombre MED</label>
+                                            <select class="form-control" id="venMed" maxlength="20" required>
+                                                {{#each medicamentos}}
+                                                <option value="{{IdMed}}">{{NomMed}}</option>
+                                                {{/each}}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="form-group">
+                                            <label>Formato MED</label>
+                                            <select class="form-control" id="venFor" maxlength="20" required>
+                                                {{#each formatos}}
+                                                <option value="{{TipoFormato}}">{{Descripcion}}</option>
+                                                {{/each}}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="form-group">
+                                            <label>Presentación MED</label>
+                                            <select class="form-control" id="venTam" maxlength="20" required>
+                                                {{#each presentaciones}}
+                                                <option value="{{TipoPresentacion}}">{{TipoPresentacion}}</option>
+                                                {{/each}}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="form-group">
+                                            <label>Tipo MED</label>
+                                            <select class="form-control" id="venTam" maxlength="20" required>
+                                                {{#each tipos}}
+                                                <option value="{{TipoMedic}}">{{TipoMedic}}</option>
+                                                {{/each}}
                                             </select>
                                         </div>
                                     </div>
 
                                     <div class="col-lg-12">
                                         <div class="form-group">
-                                            <button class="btn btn-primary">Guardar</button>
+                                            <button class="btn btn-success">Guardar</button>
                                         </div>
                                     </div>
                                 </div>
