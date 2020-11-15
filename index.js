@@ -244,13 +244,59 @@ app.get('/ventas/listarVentas', async function (req, res) {
 // MEDICAMENTOS ////////////////////////////////////////////////////////////////
 // AGREGAR MEDICAMENTO [GET]
 app.get('/medicamentos/agregarMedicamento', function (req, res) {
-    res.render('agregarMedicamento.hbs');
+    res.render('medicamentos/agregarMedicamento.hbs');
+});
+
+// AGREGAR MEDICAMENTO [POST]
+app.post('/medicamentos/agregarMedicamento', function (req, res) {
+    connection.query("insert into MEDICAMENTO (IdMed, NomMed) values (" + req.body.IdMed + ", '" + req.body.NomMed + "');", function(error, respuesta, fields) {
+        if (error) {throw error};
+        console.log("Agregado el medicamento");
+        res.redirect('/medicamentos/listarMedicamentos');
+    })
 });
 
 // LISTAR MEDICAMENTOS [GET]
 app.get('/medicamentos/listarMedicamentos', function (req, res) {
-    res.render('listarMedicamentos.hbs');
+    connection.query('SELECT * FROM Medicamento', function(error, medicamentos, fields) {
+        if (error) {throw error};
+        console.log("The solution is: ", medicamentos);
+        res.render('medicamentos/listarMedicamentos.hbs', { medicamentos });
+    })
 });
+
+
+// EDITAR MEDICAMENTOS [GET]
+app.get('/medicamentos/editar/:IdMed', function(req, res) {
+    let idMedicamento = req.params.IdMed;
+    connection.query('SELECT * FROM Medicamento WHERE IdMed = ' + idMedicamento, function(error, respuesta, fields) {
+        if (error) {throw error};
+        console.log("Encontrado el cliente");
+        medicamentoEncontrado = respuesta[0];
+        res.render('medicamentos/actualizarMeds.hbs', { IdMed: medicamentoEncontrado.IdMed, NomMed: medicamentoEncontrado.NomMed });
+    })
+})
+
+
+// ACTUALIZAR MEDICAMENTOS [POST]
+app.post('/medicamentos/editar', function (req, res) {
+    connection.query("UPDATE MEDICAMENTO SET NomMed = '" + req.body.NomMed + "' WHERE IdMed = " + req.body.IdMed + ";", function(error, respuesta, fields) {
+        if (error) {throw error};
+        console.log("Actualizado el medicamentos");
+        res.redirect('/medicamentos/listarMedicamentos');
+    })
+});
+
+// ELIMINAR MEDS [GET]
+app.get('/medicamentos/eliminar/:IdMed', function(req, res) {
+    let idMeds = req.params.IdMed;
+    connection.query('DELETE FROM Medicamento WHERE IdMed = ' + idMeds, function(error, respuesta, fields) {
+        if (error) {throw error};
+        console.log("Eliminado el medicamento");
+        res.redirect('/medicamentos/listarMedicamentos');
+    })
+})
+
 
 // PRECIOS ////////////////////////////////////////////////////////////////
 // AGREGAR PRECIO [GET]
@@ -323,4 +369,60 @@ app.get('/proveedores/eliminar/:IdProv', function(req, res) {
 app.get('/proveedores/stock', function(req, res) {
     res.render('stock.hbs');
 })
+
+////////////////////////////////////
+//SUCURSALES
+// AGREGAR SUCURSALES [GET]
+app.get('/clientes/agregarCliente', function (req, res) {
+    res.render('personas/clientes/agregarCliente.hbs');
+});
+
+// AGREGAR SUCURSALES [POST]
+app.post('/clientes/agregarCliente', function (req, res) {
+    connection.query("insert into PERSONA (RutPer, NomPer) values (" + req.body.rut + ", '" + req.body.nombre + "');", function(error, respuesta, fields) {
+        if (error) {throw error};
+        console.log("Agregado el cliente");
+        res.redirect('/clientes/listarClientes');
+    })
+});
+
+// LISTAR SUCUR [GET]
+app.get('/clientes/listarClientes', function (req, res) {
+    connection.query('SELECT * FROM Persona', function(error, clientes, fields) {
+        if (error) {throw error};
+        console.log("The solution is: ", clientes);
+        res.render('personas/clientes/listarClientes.hbs', { clientes });
+    })
+});
+
+// EDITAR SUCUR [GET]
+app.get('/clientes/editar/:RutPer', function(req, res) {
+    let rutPersona = req.params.RutPer;
+    connection.query('SELECT * FROM Persona WHERE RutPer = ' + rutPersona, function(error, respuesta, fields) {
+        if (error) {throw error};
+        console.log("Encontrado el cliente");
+        clienteEncontrado = respuesta[0];
+        res.render('personas/clientes/actualizarCliente.hbs', { rut: clienteEncontrado.RutPer, nombre: clienteEncontrado.NomPer });
+    })
+})
+
+// ACTUALIZAR SUCUR [POST]
+app.post('/clientes/editar', function (req, res) {
+    connection.query("UPDATE PERSONA SET NomPer = '" + req.body.nombre + "' WHERE RutPer = " + req.body.rut + ";", function(error, respuesta, fields) {
+        if (error) {throw error};
+        console.log("Actualizado el cliente");
+        res.redirect('/clientes/listarClientes');
+    })
+});
+
+// ELIMINAR SUCUR[GET]
+app.get('/clientes/eliminar/:RutPer', function(req, res) {
+    let rutPersona = req.params.RutPer;
+    connection.query('DELETE FROM Persona WHERE RutPer = ' + rutPersona, function(error, respuesta, fields) {
+        if (error) {throw error};
+        console.log("Eliminado el cliente");
+        res.redirect('/clientes/listarClientes');
+    })
+})
+
 
