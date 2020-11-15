@@ -115,7 +115,7 @@ app.get('/quimicos/agregarQuimicoFarm', function (req, res) {
 
 // AGREGAR QUÍMICOS FARMACEUTICOS [POST]
 app.post('/quimicos/agregarQuimicoFarm', function (req, res) {
-    connection.query("insert into QUIMICOFARMAC (RutQuimic, NomQuimic) values (" + req.body.rut + ", '" + req.body.nombre + "');", function(error, respuesta, fields) {
+    connection.query("insert into QUIMICOFARMAC (RutQuimic, NomQuimic) values (" + req.body.RutQuimic + ", '" + req.body.NomQuimic + "');", function(error, respuesta, fields) {
         if (error) {throw error};
         console.log("Agregado el químico");
         res.redirect('/quimicos/listarQuimicos');
@@ -131,7 +131,28 @@ app.get('/quimicos/listarQuimicos', function (req, res) {
     })
 });
 
-// ELIMINAR CLIENTE [GET]
+
+// EDITAR QUIMICO FARM [GET]
+app.get('/quimicos/editar/:RutQuimic', function(req, res) {
+    let rutQuimico = req.params.RutQuimic;
+    connection.query('SELECT * FROM QUIMICOFARMAC WHERE RutQuimic = ' + rutQuimico, function(error, respuesta, fields) {
+        if (error) {throw error};
+        console.log("Encontrado el quimico");
+        quimicoEncontrado = respuesta[0];
+        res.render('personas/quimicos/actualizarQuimicoFarm.hbs', { RutQuimic: quimicoEncontrado.RutQuimic, NomQuimic: quimicoEncontrado.NomQuimic });
+    })
+})
+
+// ACTUALIZAR QUIMICOS FARMACEUTICOS [POST]
+app.post('/quimicos/editar', function (req, res) {
+    connection.query("UPDATE QUIMICOFARMAC SET NomQuimic = '" + req.body.NomQuimic + "' WHERE RutQuimic = " + req.body.RutQuimic + ";", function(error, respuesta, fields) {
+        if (error) {throw error};
+        console.log("Actualizado el quimico");
+        res.redirect('/quimicos/listarQuimicos');
+    })
+});
+
+// ELIMINAR QUIMICO FARMAC [GET]
 app.get('/quimicos/eliminar/:RutQuimic', function(req, res) {
     let rutQuimico = req.params.RutQuimic;
     connection.query('DELETE FROM QUIMICOFARMAC WHERE RutQuimic = ' + rutQuimico, function(error, respuesta, fields) {
@@ -148,14 +169,54 @@ app.get('/medicos/agregarMedico', function (req, res) {
     res.render('personas/medicos/agregarMedico.hbs');
 });
 
+//AGREGAR MEDICO [POST]
+app.post('/medicos/agregarMedico', function (req, res) {
+    connection.query("insert into MEDICO (RutMed, NomMed_m, EspecMed) values (" + req.body.RutMed + ", '" + req.body.NomMed_m + "', '" + req.body.EspecMed + "');", function(error, respuesta, fields) {
+        if (error) {throw error};
+        console.log("Agregado el medico");
+        res.redirect('/medicos/listarMedicos');
+    })
+});
+
 // LISTAR MEDICOS [GET]
 app.get('/medicos/listarMedicos', function (req, res) {
-    let medicos = [
-        {rut:"26", nombre: "Bottas", especialidad: "Otorrino"},
-        {rut:"18", nombre: "Hamilton", especialidad: "Superheroe"},
-    ]
-    res.render('personas/medicos/listarMedicos.hbs', { medicos });
+    connection.query('SELECT * FROM Medico', function(error, medicos, fields) {
+        if (error) {throw error};
+        console.log("The solution is: ", medicos);
+        res.render('personas/medicos/listarMedicos.hbs', { medicos });
+    })
 });
+
+// EDITAR MEDICO [GET]
+app.get('/medicos/editar/:RutMed', function(req, res) {
+    let rutMedico = req.params.RutMed;
+    connection.query('SELECT * FROM Medico WHERE RutMed = ' + rutMedico, function(error, respuesta, fields) {
+        if (error) {throw error};
+        console.log("Encontrado el medico");
+        medicoEncontrado = respuesta[0];
+        res.render('personas/medicos/actualizarMedicos.hbs', { RutMed: medicoEncontrado.RutMed, NomMed_m: medicoEncontrado.NomMed_m, EspecMed: medicoEncontrado.EspecMed });
+    })
+})
+
+// ACTUALIZAR MEDICO [POST]
+app.post('/medicos/editar', function (req, res) {
+    connection.query("UPDATE MEDICO SET NomMed_m = '" + req.body.NomMed_m + "' , EspecMed= '" + req.body.EspecMed + "' WHERE RutMed = " + req.body.RutMed + ";" , function(error, respuesta, fields) {
+        if (error) {throw error};
+        console.log("Actualizado el medico");
+        res.redirect('/medicos/listarMedicos');
+    })
+});
+
+
+// ELIMINAR MEDICOS [GET]
+app.get('/medicos/eliminar/:RutMed', function(req, res) {
+    let rutMedico = req.params.RutMed;
+    connection.query('DELETE FROM Medico WHERE RutMed = ' + rutMedico, function(error, respuesta, fields) {
+        if (error) {throw error};
+        console.log("Eliminado el medico");
+        res.redirect('/medicos/listarMedicos');
+    })
+})
 
 // VENTAS ////////////////////////////////////////////////////////////////
 // AGREGAR VENTA [GET]
@@ -202,3 +263,64 @@ app.get('/precios/listarPrecios', function (req, res) {
     let precios = [ { idMedicamento: "01" } ]
     res.render('listarPrecios.hbs', { precios } );
 });
+
+//////////////////////////////////
+//PROVEEDORES
+//AGREGAR PROVEEDOR [GET]
+app.get('/proveedores/agregarProveedor', function (req, res) {
+    res.render('proveedores/agregarProveedor.hbs');
+});
+//AGREGAR PROVEEDOR [POST]
+app.post('/proveedores/agregarProveedor', function(req, res) {
+    connection.query("insert into PROVEEDOR (IdProv, NomLab) values ('" + req.body.IdProv + "', '" + req.body.NomLab + "');", function(error, respuesta, fields) {
+        if (error) {throw error};
+        console.log("Agregado el nombre el proveedor:");
+        res.redirect('/proveedores/listarProveedores');
+    })
+    //res.render('/proveedores/agregarProveedor.hbs')
+});
+
+// LISTAR PROVEEDORES [GET]
+app.get('/proveedores/listarProveedores', function(req, res) {
+    connection.query('SELECT * FROM Proveedor', function(error, proveedores, fields) {
+        if (error) {throw error};
+        console.log("The solution is: ", proveedores);
+        res.render('proveedores/listarProveedores.hbs', {proveedores});
+    })
+});
+
+// EDITAR PROVEEDOR [GET]
+app.get('/proveedores/editar/:IdProv', function(req, res) {
+    let idprov = req.params.IdProv;
+    connection.query('SELECT * FROM Proveedor WHERE IdProv = ' + idprov, function(error, respuesta, fields) {
+        if (error) {throw error};
+        console.log("Encontrado el proveedor");
+        provEncontrado = respuesta[0];
+        res.render('proveedores/actualizarProveedor.hbs', { IdProv: provEncontrado.IdProv, NomLab: provEncontrado.NomLab });
+    })
+})
+
+// ACTUALIZAR PROVEEDOR [POST]
+app.post('/proveedores/editar', function (req, res) {
+    connection.query("UPDATE PROVEEDOR SET NomLab = '" + req.body.NomLab + "' WHERE IdProv = " + req.body.IdProv + ";", function(error, respuesta, fields) {
+        if (error) {throw error};
+        console.log("Actualizado el proveedor");
+        res.redirect('/proveedores/listarProveedores');
+    })
+});
+
+// ELIMINAR PROVEEDOR [GET]
+app.get('/proveedores/eliminar/:IdProv', function(req, res) {
+    let idProveedor = req.params.IdProv;
+    connection.query('DELETE FROM Proveedor WHERE IdProv = ' + idProveedor, function(error, respuesta, fields) {
+        if (error) {throw error};
+        console.log("Eliminado el proveedor");
+        res.redirect('/proveedores/listarProveedores');
+    })
+})
+
+// STOCK
+app.get('/proveedores/stock', function(req, res) {
+    res.render('stock.hbs');
+})
+

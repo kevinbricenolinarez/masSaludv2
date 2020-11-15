@@ -27,12 +27,12 @@
                             <tbody>
                                 {{#each medicos}}
                                 <tr class="odd gradeX">
-                                    <td>{{rut}}</td>
-                                    <td>{{nombre}}</td>
-                                    <td>{{especialidad}}</td>
+                                    <td>{{RutMed}}</td>
+                                    <td>{{NomMed_m}}</td>
+                                    <td>{{EspecMed}}</td>
                                     <td>
-                                        <button class="btn btn-primary" onclick="editarRegistro('{{rut}}')">Editar</button>
-                                        <button class="btn btn-danger" onclick="eliminarRegistro('{{rut}}')">Eliminar</button>
+                                        <a class="btn btn-primary" href="/medicos/editar/{{RutMed}}">Editar</a>
+                                        <a class="btn btn-danger" href="/medicos/eliminar/{{RutMed}}">Eliminar</a>
                                     </td>
                                 </tr>
                                 {{/each}}
