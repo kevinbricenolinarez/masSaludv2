@@ -1,7 +1,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-12">
-            <h1 class="page-header">Registrar Venta</h1>
+            <h1 class="page-header">Registrar Precios</h1>
         </div>
         <!-- /.col-lg-12 -->
     </div>
@@ -10,7 +10,7 @@
         <div class="col-lg-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    Venta
+                    Precios
                 </div>
                 <div class="panel-body">
                     <div class="row">
@@ -20,16 +20,18 @@
                                 <div class="row">
                                     <div class="col-lg-3">
                                         <div class="form-group">
-                                            <label>RUT Cliente</label>
-                                            <input class="form-control" id="venCliRut" maxlength="11" required
-                                                placeholder="26263200-8">
+                                            <label>Precio</label>
+                                            <input class="form-control" id="pedido" type="number" min="100" required name="Pedido">
                                         </div>
                                     </div>
                                     <div class="col-lg-3">
                                         <div class="form-group">
-                                            <label>RUT Vendedor</label>
-                                            <input class="form-control" id="venVenRut" maxlength="11" required
-                                                placeholder="26263200-8">
+                                            <label>Descuento</label>
+                                            <select class="form-control" id="AplicSN_l" maxlength="20" required name="AplicSN_l">
+                                                {{#each data.descuentos}}
+                                                <option value="{{AplicSN}}">{{AplicSN}}</option>
+                                                {{/each}}
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
@@ -37,9 +39,9 @@
                                 <div class="row">
                                     <div class="col-lg-3">
                                         <div class="form-group">
-                                            <label>Nombre MED</label>
-                                            <select class="form-control" id="venMed" maxlength="20" required>
-                                                {{#each medicamentos}}
+                                            <label>Medicamento</label>
+                                            <select class="form-control" id="meds" maxlength="20" required name="IdMed">
+                                                {{#each data.medicamentos}}
                                                 <option value="{{IdMed}}">{{NomMed}}</option>
                                                 {{/each}}
                                             </select>
@@ -49,33 +51,34 @@
                                         <div class="form-group">
                                             <label>Formato MED</label>
                                             <select class="form-control" id="venFor" maxlength="20" required>
-                                                {{#each formatos}}
+                                                {{#each data.formatos}}
                                                 <option value="{{TipoFormato}}">{{Descripcion}}</option>
                                                 {{/each}}
-                        
                                             </select>
                                         </div>
                                     </div>
                                     <div class="col-lg-3">
                                         <div class="form-group">
                                             <label>Presentación MED</label>
-                                            <select class="form-control" name="TipoPresentacion_l" id="venTam" maxlength="20" required>
-                                                {{#each presentaciones}}
+                                            <select class="form-control" id="venTam" maxlength="20" required name="TipoPresentacion_l">
+                                                {{#each data.presentaciones}}
                                                 <option value="{{TipoPresentacion}}">{{TipoPresentacion}}</option>
                                                 {{/each}}
                                             </select>
                                         </div>
                                     </div>
+
                                     <div class="col-lg-3">
                                         <div class="form-group">
                                             <label>Tipo MED</label>
                                             <select class="form-control" id="venTam" maxlength="20" required>
-                                                {{#each tipos}}
+                                                {{#each data.tipos}}
                                                 <option value="{{TipoMedic}}">{{TipoMedic}}</option>
                                                 {{/each}}
                                             </select>
                                         </div>
                                     </div>
+                                        
 
                                     <div class="col-lg-12">
                                         <div class="form-group">

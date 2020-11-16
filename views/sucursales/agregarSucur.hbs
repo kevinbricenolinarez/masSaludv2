@@ -19,7 +19,7 @@
                             <form role="form" method="POST" action="/sucursales/agregarSucur">
                                 
                                 <div class="row">
-                                    <div class="col-lg-4">
+                                    <div class="col-lg-2">
                                         <div class="form-group">
                                             <label>Id de la Sucursal</label>
                                             <input id="idsuc" class="form-control" required maxlength="20" name="IdSucursal" value="{{IdSucursal}}">
@@ -28,8 +28,12 @@
 
                                     <div class="col-lg-4">
                                         <div class="form-group">
-                                            <label></label>
-                                            <input id="idmuni" class="form-control" required maxlength="20" name="IdMuni_s" value="{{IdMuni_s}}">
+                                            <label>Municipio</label>
+                                            <select class="form-control" name="IdMuni_s" maxlength="20" required>
+                                                {{#each municipios}}
+                                                <option value="{{IdMuni}}">{{IdMuni}} - {{NombreMunic}}</option>
+                                                {{/each}}
+                                            </select>
                                         </div>
                                     </div>
 

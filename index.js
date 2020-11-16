@@ -11,7 +11,8 @@ const connection = mySQL.createConnection({
   host     : 'localhost',
   user     : 'root',
   password : '1234',
-  database: 'farmacia'
+  database: 'farmacia',
+  multipleStatements: true,
 });
 
 connection.connect(function(err) {
@@ -369,20 +370,92 @@ app.get('/proveedores/stock', function(req, res) {
 })
 
 ////////////////////////////////////
-//SUCURSALES
+// ERROR
+app.get('/error', function (req, res) {
+    res.render('error.hbs');
+});
+
+////////////////////////////////////
+// PRECIOS
+// AGREGAR PRECIOS [GET]
+
+app.get('/listaPrecios/agregarPrecio', function (req, res) {
+    connection.query("SELECT * FROM FORMATO; SELECT * FROM PRESENTACION; SELECT * FROM TIPOMEDIC; SELECT * FROM DESCUENTO; SELECT * FROM MEDICAMENTO;", function(error, respuesta, fields) {  
+        if (error) { console.log("FALLO:", error); res.redirect("/error"); return false; };
+        console.log("Formatos encontrados:", respuesta)
+        
+        data = {
+            formatos: respuesta[0],
+            presentaciones: respuesta[1],
+            tipos: respuesta[2],
+            descuentos: respuesta[3],
+            medicamentos: respuesta[4],
+        }
+
+        res.render('listaPrecios/agregarPrecio.hbs', { data });
+        /*
+        connection.query("SELECT * FROM PRESENTACION", function(error, presentacion, fields) {  
+            if (error) { console.log("FALLO:", error); res.redirect("/error"); return false; };
+            console.log("Presentaciones encontrados:", presentacion)
+    
+            connection.query("SELECT * FROM MEDICAMENTO", function(error, medicamento, fields) {  
+                if (error) { console.log("FALLO:", error); res.redirect("/error"); return false; };
+                console.log("Medicamentos encontrados:", medicamento)
+        
+                connection.query("SELECT * FROM DESCUENTO", function(error, descuento, fields) {  
+                    if (error) { console.log("FALLO:", error); res.redirect("/error"); return false; };
+                    console.log("Descuentos encontrados:", descuento)
+            
+                    connection.query("SELECT * FROM TIPOMEDIC", function(error, tipo, fields) {  
+                        if (error) { console.log("FALLO:", error); res.redirect("/error"); return false; };
+                        console.log("Tipo encontrados:", tipo)
+                
+                        res.render('listaPrecios/agregarPrecio.hbs', { tipo });
+                    })
+                })
+            })
+        })
+        */
+    })
+});
+
+//LISTAR PRECIOS [GET]
+app.get('/listaPrecios/listarPrecios', async function (req, res) {
+
+    connection.query("SELECT * FROM TIPOMEDIC; SELECT * FROM PERSONA", function(error, respuesta, fields) { 
+        console.log("RESP:", respuesta);
+        res.render('listaPrecios/listarPrecios.hbs', { respuesta });
+    })
+
+    /*
+    connection.query("SELECT TipoMedic, RutPer from TIPOMEDIC, PERSONA;", function(error, respuesta, fields) { 
+        console.log("RESP;", respuesta);
+        res.render('listaPrecios/listarPrecios.hbs', { respuesta });
+    })*/
+});
+
+////////////////////////////////////
+// SUCURSALES
 // AGREGAR SUCURSALES [GET]
 app.get('/sucursales/agregarSucur', function (req, res) {
-    res.render('sucursales/agregarSucur.hbs');
+    connection.query("SELECT * FROM MUNICIPIO", function(error, municipios, fields) {
+        if (error) { console.log("FALLO:", error); res.redirect("/error"); return false; };
+        console.log("Municipios encontrados:", municipios);
+
+        console.log()
+
+        res.render('sucursales/agregarSucur.hbs', { municipios });
+    })
 });
 
 // AGREGAR SUCURSALES [POST]
 app.post('/sucursales/agregarSucur', function (req, res) {
-    connection.query("insert into SUCURSAL (IdSucursal', IdMuni_s, NombreSucursal) values ('" + req.body.IdSucursal + "', '" + req.body.IdMuni_s + "',  '" + req.body.NombreSucursal + "');", function(error, respuesta, fields) {
-        if (error) {throw error};
+    connection.query(`insert into SUCURSAL (IdSucursal, IdMuni_s, NombreSucursal) values ('${req.body.IdSucursal}', '${req.body.IdMuni_s}',  '${req.body.NombreSucursal}');`, function(error, respuesta, fields) {
+        if (error) { console.log("FALLO:", error); res.redirect("/error"); return false; };
+        console.log("RESP:", respuesta);
         console.log("Agregada la sucursal");
         res.redirect('/sucursales/listarSucur');
     })
-    
 });
 
 // LISTAR SUCUR [GET]
