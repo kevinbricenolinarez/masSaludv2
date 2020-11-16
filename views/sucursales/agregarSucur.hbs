@@ -19,17 +19,24 @@
                             <form role="form" method="POST" action="/sucursales/agregarSucur">
                                 
                                 <div class="row">
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-4">
                                         <div class="form-group">
-                                            <label>Id del Proveedor</label>
-                                            <input id="idprov" class="form-control" required maxlength="20" name="IdProv" value="{{IdProv}}">
+                                            <label>Id de la Sucursal</label>
+                                            <input id="idsuc" class="form-control" required maxlength="20" name="IdSucursal" value="{{IdSucursal}}">
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-4">
                                         <div class="form-group">
-                                            <label>Nombre</label>
-                                            <input id="nomlab" class="form-control" required maxlength="20" name="NomLab" value="{{NomLab}}">
+                                            <label></label>
+                                            <input id="idmuni" class="form-control" required maxlength="20" name="IdMuni_s" value="{{IdMuni_s}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-4">
+                                        <div class="form-group">
+                                            <label>Nombre Sucursal</label>
+                                            <input id="nomsuc" class="form-control" required maxlength="20" name="NombreSucursal" value="{{NombreSucursal}}">
                                         </div>
                                     </div>
                                 

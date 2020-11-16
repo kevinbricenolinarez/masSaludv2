@@ -19,8 +19,6 @@ connection.connect(function(err) {
     console.log("Connected");
 });
 
-
-
 // MIDDLEWARE
 app.use(bodyParser.urlencoded({ extended: true }))
 
@@ -373,25 +371,26 @@ app.get('/proveedores/stock', function(req, res) {
 ////////////////////////////////////
 //SUCURSALES
 // AGREGAR SUCURSALES [GET]
-app.get('/clientes/agregarCliente', function (req, res) {
-    res.render('personas/clientes/agregarCliente.hbs');
+app.get('/sucursales/agregarSucur', function (req, res) {
+    res.render('sucursales/agregarSucur.hbs');
 });
 
 // AGREGAR SUCURSALES [POST]
-app.post('/clientes/agregarCliente', function (req, res) {
-    connection.query("insert into PERSONA (RutPer, NomPer) values (" + req.body.rut + ", '" + req.body.nombre + "');", function(error, respuesta, fields) {
+app.post('/sucursales/agregarSucur', function (req, res) {
+    connection.query("insert into SUCURSAL (IdSucursal', IdMuni_s, NombreSucursal) values ('" + req.body.IdSucursal + "', '" + req.body.IdMuni_s + "',  '" + req.body.NombreSucursal + "');", function(error, respuesta, fields) {
         if (error) {throw error};
-        console.log("Agregado el cliente");
-        res.redirect('/clientes/listarClientes');
+        console.log("Agregada la sucursal");
+        res.redirect('/sucursales/listarSucur');
     })
+    
 });
 
 // LISTAR SUCUR [GET]
-app.get('/clientes/listarClientes', function (req, res) {
-    connection.query('SELECT * FROM Persona', function(error, clientes, fields) {
+app.get('/sucursales/listarSucur', function (req, res) {
+    connection.query('SELECT * FROM Sucursal', function(error, sucursales, fields) {
         if (error) {throw error};
-        console.log("The solution is: ", clientes);
-        res.render('personas/clientes/listarClientes.hbs', { clientes });
+        console.log("The solution is: ", sucursales);
+        res.render('sucursales/listarSucur.hbs', { sucursales });
     })
 });
 
