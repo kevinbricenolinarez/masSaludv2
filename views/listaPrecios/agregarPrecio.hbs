@@ -1,7 +1,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-12">
-            <h1 class="page-header">Registrar Precios</h1>
+            <h1 class="page-header">Registrar Precios <i class="fa fa-usd" ></i></h1>
         </div>
         <!-- /.col-lg-12 -->
     </div>
@@ -15,19 +15,30 @@
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-lg-12">
-                            <form role="form">
+
+                            <form role="form" method="POST" action="/listaPrecios/agregadoPrecio">
+                                
+
+
 
                                 <div class="row">
                                     <div class="col-lg-3">
+
                                         <div class="form-group">
-                                            <label>Precio</label>
-                                            <input class="form-control" id="pedido" type="number" min="100" required name="Pedido">
+                                            <label>Id medicamento</label>
+                                            <select class="form-control" id="NomMed" maxlength="20" required name="NomMed">
+                                                <option hidden >Id medicamento</option>
+                                                {{#each data.medicamentos}}
+                                                <option value="{{IdMed}}">{{IdMed}} - {{NomMed}}</option>
+                                                {{/each}}
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="col-lg-3">
                                         <div class="form-group">
                                             <label>Descuento</label>
-                                            <select class="form-control" id="AplicSN_l" maxlength="20" required name="AplicSN_l">
+                                            <select class="form-control" id="AplicSN" maxlength="20" required name="AplicSN">
+                                                <option hidden >Aplica/No aplica</option>
                                                 {{#each data.descuentos}}
                                                 <option value="{{AplicSN}}">{{AplicSN}}</option>
                                                 {{/each}}
@@ -38,21 +49,25 @@
 
                                 <div class="row">
                                     <div class="col-lg-3">
+
                                         <div class="form-group">
-                                            <label>Medicamento</label>
-                                            <select class="form-control" id="meds" maxlength="20" required name="IdMed">
-                                                {{#each data.medicamentos}}
-                                                <option value="{{IdMed}}">{{NomMed}}</option>
-                                                {{/each}}
-                                            </select>
+                                            <label>Precio</label>
+                                            <input class="form-control" id="precio" type="number" min="100" required name="precio">
                                         </div>
+
                                     </div>
+
+
+
+
+
                                     <div class="col-lg-3">
                                         <div class="form-group">
                                             <label>Formato MED</label>
-                                            <select class="form-control" id="venFor" maxlength="20" required>
+                                            <select class="form-control" id="TipoFormato" maxlength="20" required name="TipoFormato">
+                                                <option hidden >Caja/Frasco/Tableta</option>
                                                 {{#each data.formatos}}
-                                                <option value="{{TipoFormato}}">{{Descripcion}}</option>
+                                                <option value="{{TipoFormato}}">{{TipoFormato}}</option>
                                                 {{/each}}
                                             </select>
                                         </div>
@@ -60,7 +75,8 @@
                                     <div class="col-lg-3">
                                         <div class="form-group">
                                             <label>Presentación MED</label>
-                                            <select class="form-control" id="venTam" maxlength="20" required name="TipoPresentacion_l">
+                                            <select class="form-control" id="TipoPresentacion" maxlength="20" required name="TipoPresentacion">
+                                                <option hidden >gr/mg/ml</option>
                                                 {{#each data.presentaciones}}
                                                 <option value="{{TipoPresentacion}}">{{TipoPresentacion}}</option>
                                                 {{/each}}
@@ -71,7 +87,8 @@
                                     <div class="col-lg-3">
                                         <div class="form-group">
                                             <label>Tipo MED</label>
-                                            <select class="form-control" id="venTam" maxlength="20" required>
+                                            <select class="form-control" id="TipoMedic" maxlength="20" required name="TipoMedic">
+                                                <option hidden >Con Receta/Sin Receta/Receta retenida</option>
                                                 {{#each data.tipos}}
                                                 <option value="{{TipoMedic}}">{{TipoMedic}}</option>
                                                 {{/each}}

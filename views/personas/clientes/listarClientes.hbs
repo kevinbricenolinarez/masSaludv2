@@ -1,7 +1,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-12">
-            <h1 class="page-header">Listado Clientes</h1>
+            <h1 class="page-header">Listado Clientes <i class="fa fa-user fa-fw"></i></i></h1>
         </div>
         <!-- /.col-lg-12 -->
     </div>
@@ -17,27 +17,28 @@
                 <!-- /.panel-heading -->
 
                 <div class="row" style="padding:16px">
-                    <div class="col-lg-3">
-                    <div class="input-group custom-search-form">
-                        <input type="text" class="form-control" placeholder="Buscar...">
-                        <span class="input-group-btn">
-                            <button class="btn btn-primary" type="button">
-                                <i class="fa fa-search"></i>
-                            </button>
-                        </span>
-                    </div>
-                    <!-- /input-group -->
+                    <div class="col-lg-12" style="margin-bottom: 10px;">
+                        <form role="form" method="POST" action="/ventas/listarVentas">
+                            <div class="input-group custom-search-form">
+                                <input type="text" class="form-control" placeholder="Buscar por RUT de Cliente" name="rut">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-primary" type="submit">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </span>
+                            </div>
+                            <!-- /input-group -->
+                        </form>
                     </div>
 
-                    <div class="col-lg-3">
-                        <select class="form-control">
-                            <option value="A-Z">Nombre: A-Z</option>
-                            <option value="Z-A">Nombre: Z-A</option>
-                            <option value="Asc">RUT: Ascendente</option>
-                            <option value="Asc">RUT: Descendente</option>
-                        </select>
+                    <div class="col-lg-12">
+                        <span><a class="btn">Ordenar:</a></span>
+                        <span><a class="btn btn-warning" href="/clientes/listarClientes/byList">Orden de creación</a></span>
+                        <span><a class="btn btn-warning" href="/clientes/listarClientes/byNomAZ">Nombre: A-Z</a></span>
+                        <span><a class="btn btn-warning" href="/clientes/listarClientes/byNomZA">Nombre: Z-A</a></span>
+                        <span><a class="btn btn-warning" href="/clientes/listarClientes/byRutAsc">RUT: Ascendente</a></span>
+                        <span><a class="btn btn-warning" href="/clientes/listarClientes/byRutDesc">RUT: Descendente</a></span>
                     </div>
-                    
                 </div>
 
                 <div class="panel-body">
@@ -53,7 +54,7 @@
                             <tbody>
                                 {{#each clientes}}
                                 <tr class="odd gradeX">
-                                    <td>{{RutPer}}</td>
+                                    <td>{{RutPer_Bonito}}</td>
                                     <td>{{NomPer}}</td>
                                     <td>
                                         <a class="btn btn-primary" href="/clientes/editar/{{RutPer}}">Editar</a>

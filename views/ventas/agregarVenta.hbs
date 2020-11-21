@@ -1,8 +1,9 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-12">
-            <h1 class="page-header">Registrar Venta</h1>
+            <h1 class="page-header">Registrar Venta <i class="fa fa-cart-plus"></i></h1>   
         </div>
+       
         <!-- /.col-lg-12 -->
     </div>
     <!-- /.row -->
@@ -15,21 +16,21 @@
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-lg-12">
-                            <form role="form">
+                            <form role="form" method="POST" action="/ventas/agregarVenta">
 
                                 <div class="row">
                                     <div class="col-lg-3">
                                         <div class="form-group">
                                             <label>RUT Cliente</label>
-                                            <input class="form-control" id="venCliRut" maxlength="11" required
-                                                placeholder="26263200-8">
+                                            <input type="number" class="form-control" name="RutPer_v" maxlength="11" required
+                                                placeholder="262632008" value="11111107">
                                         </div>
                                     </div>
                                     <div class="col-lg-3">
                                         <div class="form-group">
                                             <label>RUT Vendedor</label>
-                                            <input class="form-control" id="venVenRut" maxlength="11" required
-                                                placeholder="26263200-8">
+                                            <input type="number" class="form-control" name="RutQuim_v" maxlength="11" required
+                                                placeholder="262632008" value="12312421">
                                         </div>
                                     </div>
                                 </div>
@@ -37,9 +38,9 @@
                                 <div class="row">
                                     <div class="col-lg-3">
                                         <div class="form-group">
-                                            <label>Nombre MED</label>
-                                            <select class="form-control" id="venMed" maxlength="20" required>
-                                                {{#each medicamentos}}
+                                            <label>Medicamento</label>
+                                            <select class="form-control" name="IdMed_v" maxlength="20" required name="IdMed">
+                                                {{#each data.medicamentos}}
                                                 <option value="{{IdMed}}">{{NomMed}}</option>
                                                 {{/each}}
                                             </select>
@@ -48,29 +49,29 @@
                                     <div class="col-lg-3">
                                         <div class="form-group">
                                             <label>Formato MED</label>
-                                            <select class="form-control" id="venFor" maxlength="20" required>
-                                                {{#each formatos}}
+                                            <select class="form-control" name="TipoFormato_v" maxlength="20" required>
+                                                {{#each data.formatos}}
                                                 <option value="{{TipoFormato}}">{{Descripcion}}</option>
                                                 {{/each}}
-                        
                                             </select>
                                         </div>
                                     </div>
                                     <div class="col-lg-3">
                                         <div class="form-group">
                                             <label>Presentación MED</label>
-                                            <select class="form-control" name="TipoPresentacion_l" id="venTam" maxlength="20" required>
-                                                {{#each presentaciones}}
+                                            <select class="form-control" name="TipoPresentacion_v" maxlength="20" required name="TipoPresentacion_l">
+                                                {{#each data.presentaciones}}
                                                 <option value="{{TipoPresentacion}}">{{TipoPresentacion}}</option>
                                                 {{/each}}
                                             </select>
                                         </div>
                                     </div>
+
                                     <div class="col-lg-3">
                                         <div class="form-group">
                                             <label>Tipo MED</label>
-                                            <select class="form-control" id="venTam" maxlength="20" required>
-                                                {{#each tipos}}
+                                            <select class="form-control" name="TipoVenta" maxlength="20" required>
+                                                {{#each data.tipos}}
                                                 <option value="{{TipoMedic}}">{{TipoMedic}}</option>
                                                 {{/each}}
                                             </select>

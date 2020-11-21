@@ -1,7 +1,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-12">
-            <h1 class="page-header">Listado Químicos</h1>
+            <h1 class="page-header">Listado Químicos <i class="fa fa-user fa-fw"></i></h1>
         </div>
         <!-- /.col-lg-12 -->
     </div>
@@ -12,6 +12,32 @@
                 <div class="panel-heading">
                     Registros
                 </div>
+
+                <div class="row" style="padding:16px">
+                    <div class="col-lg-12" style="margin-bottom: 10px;">
+                        <form role="form" method="POST" action="/quimicos/listarQuimicos">
+                            <div class="input-group custom-search-form">
+                                <input type="text" class="form-control" placeholder="Buscar por RUT de Quimico" name="rut">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-primary" type="submit">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </span>
+                            </div>
+                            <!-- /input-group -->
+                        </form>
+                    </div>
+
+                    <div class="col-lg-12">
+                        <span><a class="btn">Ordenar:</a></span>
+                        <span><a class="btn btn-warning" href="/quimicos/listarQuimicos/byList">Orden de creación</a></span>
+                        <span><a class="btn btn-warning" href="/quimicos/listarQuimicos/byNomAZ">Nombre: A-Z</a></span>
+                        <span><a class="btn btn-warning" href="/quimicos/listarQuimicos/byNomZA">Nombre: Z-A</a></span>
+                        <span><a class="btn btn-warning" href="/quimicos/listarQuimicos/byRutAsc">RUT: Ascendente</a></span>
+                        <span><a class="btn btn-warning" href="/quimicos/listarQuimicos/byRutDesc">RUT: Descendente</a></span>
+                    </div>
+                </div>
+
                 <!-- /.panel-heading -->
                 <div class="panel-body">
                     <div class="table-responsive">
@@ -26,7 +52,7 @@
                             <tbody>
                                 {{#each quimicos}}
                                 <tr class="odd gradeX">
-                                    <td>{{RutQuimic}}</td>
+                                    <td>{{RutQuimic_Bonito}}</td>
                                     <td>{{NomQuimic}}</td>
                                     <td>
                                         <a class="btn btn-primary" href="/quimicos/editar/{{RutQuimic}}">Editar</a>

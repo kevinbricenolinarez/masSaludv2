@@ -1,7 +1,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-12">
-            <h1 class="page-header">Registrar Cliente</h1>
+            <h1 class="page-header">Registrar Cliente <i class="fa fa-user fa-fw"></i></h1>
         </div>
         <!-- /.col-lg-12 -->
     </div>
@@ -21,9 +21,8 @@
                                     <div class="col-lg-3">
                                         <div class="form-group">
                                             <label>RUT</label>
-                                            <input class="form-control" id="cliRut" maxlength="11" name="rut" required value="{{rut}}"
-                                                placeholder="26263200-8">
-                                            <p class="help-block">Ingrese RUT</p>
+                                            <input class="form-control" disabled value="{{rut}}">
+                                            <input type="hidden" name="rut" required value="{{rut}}">
                                         </div>
                                     </div>
                                 </div>
