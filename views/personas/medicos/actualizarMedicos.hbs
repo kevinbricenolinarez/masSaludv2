@@ -1,7 +1,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-12">
-            <h1 class="page-header">Registrar Medicos <i class="fa fa-user fa-fw"></i></h1>
+            <h1 class="page-header">Actualizar Medicos <i class="fa fa-user fa-fw"></i></h1>
         </div>
         <!-- /.col-lg-12 -->
     </div>
@@ -25,19 +25,26 @@
                                             <input type="hidden" name="RutMed" required value="{{RutMed}}">
                                         </div>
                                     </div>
+
+                                    <div class="col-lg-3">
+                                        <div class="form-group">
+                                            <label>Nombre Medico</label>
+                                             <input class="form-control" id="nommed" maxlength="20" name="NomMed_m" required value="{{NomMed_m}}">
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-lg-6">
                                         <div class="form-group">
-                                            <label>Nombre Medico</label>
-                                            <input class="form-control" id="nommed" maxlength="20" name="NomMed_m" required value="{{NomMed_m}}">
+                                            <label>Especialidad Medico</label>
+                                            <input class="form-control" id="especmed" maxlength="20" name="EspecMed" required value="{{EspecMed}}">
                                         </div>
                                     </div>
 
                                     <div class="col-lg-12">
                                         <div class="form-group">
-                                            <button type="submit" class="btn btn-primary">Guardar</button>
+                                            <button type="submit" class="btn btn-success">Guardar</button>
                                         </div>
                                     </div>
                                 </div>

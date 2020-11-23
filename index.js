@@ -167,13 +167,31 @@ app.post('/quimicos/agregarQuimicoFarm', function (req, res) {
     connection.query("insert into QUIMICOFARMAC (RutQuimic, NomQuimic) values (" + req.body.RutQuimic + ", '" + req.body.NomQuimic + "');", function(error, respuesta, fields) {
         if (error) { console.log("FALLO:", error); res.redirect("/errorDetalle/" + error.sqlMessage); return false; };
         console.log("Agregado el químico");
-        res.redirect('/quimicos/listarQuimicos');
+        res.redirect('/quimicos/listarQuimicos/byList');
     })
 });
 
 // LISTAR QUÍMICOS FARMACEUTICOS [GET]
-app.get('/quimicos/listarQuimicos', function (req, res) {
-    connection.query('SELECT * FROM QUIMICOFARMAC', function(error, quimicos, fields) {
+app.get('/quimicos/listarQuimicos/:sort', function (req, res) {
+
+    consulta = '';  
+    if (req.params.sort == "byList") {
+        consulta = 'SELECT * FROM QUIMICOFARMAC';
+    }
+    else if (req.params.sort == "byNomAZ") {
+        consulta = 'SELECT * FROM QUIMICOFARMAC ORDER BY NomQuimic ASC';
+    }
+    else if (req.params.sort == "byNomZA") {
+        consulta = 'SELECT * FROM QUIMICOFARMAC ORDER BY NomQuimic DESC';
+    }
+    else if (req.params.sort == "byRutAsc") {
+        consulta = 'SELECT * FROM QUIMICOFARMAC ORDER BY RutQuimic ASC';
+    }
+    else if (req.params.sort == "byRutDesc") {
+        consulta = 'SELECT * FROM QUIMICOFARMAC ORDER BY RutQuimic DESC';
+    }
+
+    connection.query(consulta, function(error, quimicos, fields) {
         if (error) { console.log("FALLO:", error); res.redirect("/errorDetalle/" + error.sqlMessage); return false; };
         console.log("QUIMICOS ENCONTRADOS: ", quimicos);
 
@@ -204,7 +222,7 @@ app.post('/quimicos/editar', function (req, res) {
     connection.query("UPDATE QUIMICOFARMAC SET NomQuimic = '" + req.body.NomQuimic + "' WHERE RutQuimic = " + req.body.RutQuimic + ";", function(error, respuesta, fields) {
         if (error) { console.log("FALLO:", error); res.redirect("/errorDetalle/" + error.sqlMessage); return false; };
         console.log("Actualizado el quimico");
-        res.redirect('/quimicos/listarQuimicos');
+        res.redirect('/quimicos/listarQuimicos/byList');
     })
 });
 
@@ -214,7 +232,7 @@ app.get('/quimicos/eliminar/:RutQuimic', function(req, res) {
     connection.query('DELETE FROM QUIMICOFARMAC WHERE RutQuimic = ' + rutQuimico, function(error, respuesta, fields) {
         if (error) { console.log("FALLO:", error); res.redirect("/errorDetalle/" + error.sqlMessage); return false; };
         console.log("Eliminado el químico");
-        res.redirect('/quimicos/listarQuimicos');
+        res.redirect('/quimicos/listarQuimicos/byList');
     })
 })
 /////////////////////////////////////////////////////////////
@@ -422,7 +440,7 @@ app.post('/ventas/editar', function (req, res) {
     })
 });
 
-// ELIMINAR MEDS [GET]
+// ELIMINAR VENTAS [GET]
 app.get('/ventas/eliminar/:RutPer_v/:FechaVenta/:HoraVenta', function(req, res) {
     let consulta = 'DELETE FROM Ventas WHERE RutPer_v = "' + req.params.RutPer_v + '" AND HoraVenta = "' + req.params.HoraVenta + '" AND FechaVenta = "' + req.params.FechaVenta + '";';
     console.log(consulta);
@@ -444,13 +462,22 @@ app.post('/medicamentos/agregarMedicamento', function (req, res) {
     connection.query("insert into MEDICAMENTO (IdMed, NomMed) values (" + req.body.IdMed + ", '" + req.body.NomMed + "');", function(error, respuesta, fields) {
         if (error) { console.log("FALLO:", error); res.redirect("/errorDetalle/" + error.sqlMessage); return false; };
         console.log("Agregado el medicamento");
-        res.redirect('/medicamentos/listarMedicamentos/byList');
+        res.redirect('/medicamentos/listarMedicamentos/byNomAZ');
     })
 });
 
 // LISTAR MEDICAMENTOS [GET]
-app.get('/medicamentos/listarMedicamentos', function (req, res) {
-    connection.query('SELECT * FROM Medicamento', function(error, medicamentos, fields) {
+app.get('/medicamentos/listarMedicamentos/:sort', function (req, res) {
+
+    let consulta = "";
+    if (req.params.sort == "byNomAZ") {
+        consulta = "SELECT * FROM MEDICAMENTO ORDER BY NomMed ASC";
+    }
+    else if (req.params.sort == "byNomZA") {
+        consulta = "SELECT * FROM MEDICAMENTO ORDER BY NomMed DESC";
+    }  
+
+    connection.query(consulta, function(error, medicamentos, fields) {
         if (error) { console.log("FALLO:", error); res.redirect("/errorDetalle/" + error.sqlMessage); return false; };
         console.log("The solution is: ", medicamentos);
         res.render('medicamentos/listarMedicamentos.hbs', { medicamentos });
@@ -474,7 +501,7 @@ app.post('/medicamentos/editar', function (req, res) {
     connection.query("UPDATE MEDICAMENTO SET NomMed = '" + req.body.NomMed + "' WHERE IdMed = " + req.body.IdMed + ";", function(error, respuesta, fields) {
         if (error) { console.log("FALLO:", error); res.redirect("/errorDetalle/" + error.sqlMessage); return false; };
         console.log("Actualizado el medicamentos");
-        res.redirect('/medicamentos/listarMedicamentos');
+        res.redirect('/medicamentos/listarMedicamentos/byNomAZ');
     })
 });
 
@@ -484,7 +511,7 @@ app.get('/medicamentos/eliminar/:IdMed', function(req, res) {
     connection.query('DELETE FROM Medicamento WHERE IdMed = ' + idMeds, function(error, respuesta, fields) {
         if (error) { console.log("FALLO:", error); res.redirect("/errorDetalle/" + error.sqlMessage); return false; };
         console.log("Eliminado el medicamento");
-        res.redirect('/medicamentos/listarMedicamentos');
+        res.redirect('/medicamentos/listarMedicamentos/byNomAZ');
     })
 })
 
@@ -498,14 +525,22 @@ app.post('/proveedores/agregarProveedor', function(req, res) {
     connection.query("insert into PROVEEDOR (IdProv, NomLab) values ('" + req.body.IdProv + "', '" + req.body.NomLab + "');", function(error, respuesta, fields) {
         if (error) { console.log("FALLO:", error); res.redirect("/errorDetalle/" + error.sqlMessage); return false; };
         console.log("Agregado el nombre el proveedor:");
-        res.redirect('/proveedores/listarProveedores');
+        res.redirect('/proveedores/listarProveedores/byNomAZ');
     })
-    //res.render('/proveedores/agregarProveedor.hbs')
 });
 
 // LISTAR PROVEEDORES [GET]
-app.get('/proveedores/listarProveedores', function(req, res) {
-    connection.query('SELECT * FROM Proveedor', function(error, proveedores, fields) {
+app.get('/proveedores/listarProveedores/:sort', function(req, res) {
+
+    let consulta = "";
+    if (req.params.sort == "byNomAZ") {
+        consulta = "SELECT * FROM Proveedor ORDER BY NomLab ASC";
+    }
+    else if (req.params.sort == "byNomZA") {
+        consulta = "SELECT * FROM Proveedor ORDER BY NomLab DESC";
+    }  
+
+    connection.query(consulta, function(error, proveedores, fields) {
         if (error) { console.log("FALLO:", error); res.redirect("/errorDetalle/" + error.sqlMessage); return false; };
         console.log("The solution is: ", proveedores);
         res.render('proveedores/listarProveedores.hbs', {proveedores});
@@ -528,7 +563,7 @@ app.post('/proveedores/editar', function (req, res) {
     connection.query("UPDATE PROVEEDOR SET NomLab = '" + req.body.NomLab + "' WHERE IdProv = " + req.body.IdProv + ";", function(error, respuesta, fields) {
         if (error) { console.log("FALLO:", error); res.redirect("/errorDetalle/" + error.sqlMessage); return false; };
         console.log("Actualizado el proveedor");
-        res.redirect('/proveedores/listarProveedores');
+        res.redirect('/proveedores/listarProveedores/byNomAZ');
     })
 });
 
@@ -538,13 +573,13 @@ app.get('/proveedores/eliminar/:IdProv', function(req, res) {
     connection.query('DELETE FROM Proveedor WHERE IdProv = ' + idProveedor, function(error, respuesta, fields) {
         if (error) { console.log("FALLO:", error); res.redirect("/errorDetalle/" + error.sqlMessage); return false; };
         console.log("Eliminado el proveedor");
-        res.redirect('/proveedores/listarProveedores');
+        res.redirect('/proveedores/listarProveedores/byNomAZ');
     })
 })
 
 ///////////////////////// STOCK
 //AGREGAR STOCK [GET]
-app.get('/proveedores/agregarStock', function (req, res) {
+app.get('/stock/agregarStock', function (req, res) {
     connection.query("SELECT * FROM FORMATO; SELECT * FROM PRESENTACION; SELECT * FROM PROVEEDOR; SELECT * FROM MEDICAMENTO; SELECT Cantidad FROM STOCK; SELECT * FROM LOTE", function(error, respuesta, fields) {  
         if (error) { console.log("FALLO:", error); res.redirect("/errorDetalle/" + error.sqlMessage); return false; };
         console.log("Formatos encontrados:", respuesta)
@@ -557,24 +592,24 @@ app.get('/proveedores/agregarStock', function (req, res) {
             cantidad: respuesta[4],
             lote: respuesta[5],
         }
-        res.render('proveedores/agregarStock.hbs', { dataStock });  
+        res.render('stock/agregarStock.hbs', { dataStock });  
     })  
 });
 
 //CREAR LOTE
 
 //AGREGAR STOCK [POST]
-app.post('/proveedores/agregarStock', function (req, res) {
+app.post('/stock/agregarStock', function (req, res) {
     connection.query(`insert into LOTE (IdLote,IdProv_l) values('${req.body.IdLote_s}','${req.body.IdProv_s}' ); insert into STOCK (IdProv_s, IdMed_s, TipoPresentacion_s, TipoFormato_s,Cantidad, FechaLlegadaStock, IdLote_s) values ('${req.body.IdProv_s}', '${req.body.IdMed_s}',  '${req.body.TipoPresentacion_s}', '${req.body.TipoFormato_s}','${req.body.Cantidad}','${req.body.FechaLlegadaStock}','${req.body.IdLote_s}');`, function(error, respuesta, fields) {
         if (error) { console.log("FALLO:", error); res.redirect("/errorDetalle/" + error.sqlMessage); return false; };
         console.log("RESP:", respuesta);
         console.log("Agregado el registro del stock");
-        res.redirect('/proveedores/listarStock/byDateDesc');
+        res.redirect('/stock/listarStock/byDateDesc');
     })
 });
 
 //LISTAR STOCK [GET]
-app.get('/proveedores/listarStock/:sort', async function (req, res) {
+app.get('/stock/listarStock/:sort', async function (req, res) {
 
     let consulta = "";
     if (req.params.sort == "byDateDesc") {
@@ -598,16 +633,61 @@ app.get('/proveedores/listarStock/:sort', async function (req, res) {
 
         })
 
-        res.render('proveedores/listarStock.hbs', { stock });
+        res.render('stock/listarStock.hbs', { stock });
     })
 });
 
 //ELIMINAR STOCK [GET]
-app.get('/proveedores/eliminar/:FechaLlegadaStock/:TipoPresentacion_s/:TipoFormato_s/:IdLote_s/:IdMed_s/:IdProv_s', function(req, res) {
+app.get('/stock/eliminar/:FechaLlegadaStock/:TipoPresentacion_s/:TipoFormato_s/:IdLote_s/:IdMed_s/:IdProv_s', function(req, res) {
     connection.query('DELETE FROM STOCK WHERE FechaLlegadaStock = "' + req.params.FechaLlegadaStock + '" AND TipoPresentacion_s = "' + req.params.TipoPresentacion_s + '" AND TipoFormato_s = "' + req.params.TipoFormato_s + '" AND IdMed_s = ' + req.params.IdMed_s + ' AND IdLote_s = ' + req.params.IdLote_s + ' AND IdProv_s = ' + req.params.IdProv_s, function(error, respuesta, fields) {
         if (error) { console.log("FALLO:", error); res.redirect("/errorDetalle/" + error.sqlMessage); return false; };
         console.log("Eliminado el stock");
-        res.redirect('/proveedores/listarStock/byDateDesc');
+        res.redirect('/stock/listarStock/byDateDesc');
+    })
+})
+
+// EDITAR STOCK [GET]
+app.get('/stock/editar/:IdProv_s/:IdMed_s/:IdLote_s', function(req, res) {
+    connection.query(`SELECT * FROM FORMATO; SELECT * FROM PRESENTACION; SELECT * FROM PROVEEDOR; SELECT * FROM MEDICAMENTO; SELECT Cantidad FROM STOCK; SELECT * FROM LOTE; 
+                    SELECT * FROM STOCK WHERE IdProv_s = ${req.params.IdProv_s} AND IdMed_s = '${req.params.IdMed_s}' AND IdLote_s = '${req.params.IdLote_s}';`, function(error, respuesta, fields) {
+        
+        if (error) { console.log("FALLO:", error); res.redirect("/errorDetalle/" + error.sqlMessage); return false; };
+        console.log("respuesta[0] =", respuesta[0]);
+
+        dataStock = {
+            formatos: respuesta[0],
+            presentaciones: respuesta[1],
+            proveedores: respuesta[2],
+            medicamentos: respuesta[3],
+            cantidad: respuesta[4],
+            lote: respuesta[5],
+        }
+
+        let stock = respuesta[6][0];
+        stock.FechaLlegadaStock =  stock.FechaLlegadaStock.getFullYear() + "-" + (stock.FechaLlegadaStock.getMonth() + 1) + "-" + stock.FechaLlegadaStock.getDate();
+
+        res.render('stock/actualizarstock.hbs', { data: dataStock, stock });
+    })
+})
+
+// ACTUALIZAR STOCK [POST]
+app.post('/stock/editar', function (req, res) {
+    connection.query(`UPDATE STOCK SET TipoPresentacion_s = '${req.body.TipoPresentacion_s}', TipoFormato_s = '${req.body.TipoFormato_s}', FechaLlegadaStock = '${req.body.FechaLlegadaStock}', Cantidad = ${req.body.Cantidad} WHERE IdMed_s = ${req.body.IdMed_s} AND IdProv_s= '${req.body.IdProv_s}' AND IdLote_s = '${req.body.IdLote_s}';`, function(error, respuesta, fields) {
+        
+        if (error) { console.log("FALLO:", error); res.redirect("/errorDetalle/" + error.sqlMessage); return false; };
+        console.log("Stock actualizado");
+        res.redirect('/stock/listarStock/byDateDesc');
+    })
+});
+
+// ELIMINAR STOCK [GET]
+app.get('/stock/eliminar/:IdProv_s/:IdMed_s/:IdLote_s', function(req, res) {
+    let consulta = 'DELETE FROM STOCK WHERE IdProv_s = "' + req.params.IdProv_s + '" AND IdMed_s = "' + req.params.IdMed_s + '" AND IdLote_s = "' + req.params.IdLote_s + '";';
+    console.log(consulta);
+    connection.query(consulta, function(error, respuesta, fields) {
+        if (error) { console.log("FALLO:", error); res.redirect("/errorDetalle/" + error.sqlMessage); return false; };
+        console.log("Eliminado el stock");
+        res.redirect('/stock/listarStock/byDateDesc');
     })
 })
 
@@ -652,15 +732,26 @@ app.post('/listaPrecios/agregadoPrecio', function (req, res) {
         if (error) { console.log("FALLO:", error); res.redirect("/errorDetalle/" + error.sqlMessage); return false; };
         console.log("Agregado precio");
         req.body.precio
-        res.redirect('/listaPrecios/listarPrecios');
+        res.redirect('/listaPrecios/listarPrecios/byList');
     })
 });
 
 
 //LISTAR PRECIOS [GET]
-app.get('/listaPrecios/listarPrecios', async function (req, res) {
-    // connection.query("SELECT * FROM listaprecio", function(error, precios, fields) { 
-    connection.query("select * from medicamento, listaprecio where medicamento.idmed = listaprecio.idmed_l", function(error, precios, fields) { 
+app.get('/listaPrecios/listarPrecios/:sort', async function (req, res) {
+
+    sortBy = '';  
+    if (req.params.sort == "byList") {
+        sortBy = '';
+    }
+    else if (req.params.sort == "byPrecioAsc") {
+        sortBy = 'ORDER BY Precio ASC';
+    }
+    else if (req.params.sort == "byPrecioDesc") {
+        sortBy = 'ORDER BY Precio DESC';
+    }
+    
+    connection.query("select * from medicamento, listaprecio where medicamento.idmed = listaprecio.idmed_l " + sortBy, function(error, precios, fields) { 
         if (error) { console.log("FALLO:", error); res.redirect("/errorDetalle/" + error.sqlMessage); return false; };
         console.log("RESP:", precios);
         res.render('listaPrecios/listarPrecios.hbs', { precios });
@@ -673,7 +764,7 @@ app.get('/listaPrecios/eliminar/:IdMed', function(req, res) {
     connection.query('DELETE FROM LISTAPRECIO WHERE IdMed_l = ' + idMeds, function(error, respuesta, fields) {
         if (error) { console.log("FALLO:", error); res.redirect("/errorDetalle/" + error.sqlMessage); return false; };
         console.log("Eliminado el precio");
-        res.redirect('/listaPrecios/listarPrecios');
+        res.redirect('/listaPrecios/listarPrecios/byList');
     })
 })
 
@@ -695,7 +786,7 @@ app.post('/listaPrecios/editar', function (req, res) {
     connection.query("UPDATE Listaprecio SET Precio = '" + req.body.Precio + "' WHERE IdMed_l = " + req.body.IdMed + ";", function(error, respuesta, fields) {
         if (error) { console.log("FALLO:", error); res.redirect("/errorDetalle/" + error.sqlMessage); return false; };
         console.log("Actualizado el precio");
-        res.redirect('/listaPrecios/listarPrecios');
+        res.redirect('/listaPrecios/listarPrecios/byList');
     })
 });
 
@@ -721,8 +812,17 @@ app.post('/sucursales/agregarSucur', function (req, res) {
 });
 
 // LISTAR SUCUR [GET]
-app.get('/sucursales/listarSucur', function (req, res) {
-    connection.query('SELECT * FROM Sucursal', function(error, sucursales, fields) {
+app.get('/sucursales/listarSucur/:sort', function (req, res) {
+
+    let consulta = "";
+    if (req.params.sort == "byNomAZ") {
+        consulta = "SELECT * FROM Sucursal ORDER BY NombreSucursal ASC";
+    }
+    else if (req.params.sort == "byNomZA") {
+        consulta = "SELECT * FROM Sucursal ORDER BY NombreSucursal DESC";
+    }  
+
+    connection.query(consulta, function(error, sucursales, fields) {
         if (error) { console.log("FALLO:", error); res.redirect("/errorDetalle/" + error.sqlMessage); return false; };
         console.log("The solution is: ", sucursales);
         res.render('sucursales/listarSucur.hbs', { sucursales });

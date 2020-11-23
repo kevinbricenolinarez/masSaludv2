@@ -27,7 +27,6 @@
                                         <div class="form-group">
                                             <label>Id medicamento</label>
                                             <select class="form-control" id="NomMed" maxlength="20" required name="NomMed">
-                                                <option hidden >Id medicamento</option>
                                                 {{#each data.medicamentos}}
                                                 <option value="{{IdMed}}">{{IdMed}} - {{NomMed}}</option>
                                                 {{/each}}
@@ -38,7 +37,6 @@
                                         <div class="form-group">
                                             <label>Descuento</label>
                                             <select class="form-control" id="AplicSN" maxlength="20" required name="AplicSN">
-                                                <option hidden >Aplica/No aplica</option>
                                                 {{#each data.descuentos}}
                                                 <option value="{{AplicSN}}">{{AplicSN}}</option>
                                                 {{/each}}
@@ -65,7 +63,6 @@
                                         <div class="form-group">
                                             <label>Formato MED</label>
                                             <select class="form-control" id="TipoFormato" maxlength="20" required name="TipoFormato">
-                                                <option hidden >Caja/Frasco/Tableta</option>
                                                 {{#each data.formatos}}
                                                 <option value="{{TipoFormato}}">{{TipoFormato}}</option>
                                                 {{/each}}
@@ -76,7 +73,6 @@
                                         <div class="form-group">
                                             <label>Presentación MED</label>
                                             <select class="form-control" id="TipoPresentacion" maxlength="20" required name="TipoPresentacion">
-                                                <option hidden >gr/mg/ml</option>
                                                 {{#each data.presentaciones}}
                                                 <option value="{{TipoPresentacion}}">{{TipoPresentacion}}</option>
                                                 {{/each}}
@@ -88,7 +84,6 @@
                                         <div class="form-group">
                                             <label>Tipo MED</label>
                                             <select class="form-control" id="TipoMedic" maxlength="20" required name="TipoMedic">
-                                                <option hidden >Con Receta/Sin Receta/Receta retenida</option>
                                                 {{#each data.tipos}}
                                                 <option value="{{TipoMedic}}">{{TipoMedic}}</option>
                                                 {{/each}}
