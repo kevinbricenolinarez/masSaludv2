@@ -18,24 +18,43 @@
                             <form role="form" method="POST" action="/sucursales/editar">
 
                                 <div class="row">
-                                    <div class="col-lg-3">
+                                    <div class="col-lg-2">
                                         <div class="form-group">
-                                            <label>Id Sucursal</label>
+                                            <label>ID</label>
                                             <input class="form-control" disabled value="{{sucursal.IdSucursal}}">
                                             <input type="hidden" name="IdSucursal" value="{{sucursal.IdSucursal}}" required> 
                                         </div>
                                     </div>
-                                </div>
 
-                                <div class="row">
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-4">
                                         <div class="form-group">
-                                            <label>Nombre Sucursal</label>
-                                            <input class="form-control" id="nomsucur" maxlength="40" name="NombreSucursal" required value="{{sucursal.NombreSucursal}}">
-                                            <p class="help-block">Ingrese nombre Sucursal</p>
+                                            <label>Municipio</label>
+                                            <select class="form-control" name="IdMuni_s" id="IdMuni_s" maxlength="20" required>
+                                                {{#each municipios}}
+                                                <option value="{{IdMuni}}">{{IdMuni}} - {{NombreMunic}}</option>
+                                                {{/each}}
+                                            </select>
                                         </div>
                                     </div>
 
+                                    <div class="col-lg-4">
+                                        <div class="form-group">
+                                            <label>Nombre Sucursal</label>
+                                            <input class="form-control" id="nomsucur" maxlength="255" name="NombreSucursal" required value="{{sucursal.NombreSucursal}}">
+                                        </div>
+                                    </div>
+
+                                    <input type="hidden" value="{{sucursal.IdMuni_s}}" id="IdMuni_s_Previo">
+                                    <script>
+                                        let idMuniPrevio = document.getElementById("IdMuni_s_Previo").value;
+                                        console.log("ID: " + idMuniPrevio);
+
+                                        document.getElementById("IdMuni_s").value = idMuniPrevio;
+                                    </script>
+
+                                </div>
+
+                                <div class="row">
                                     <div class="col-lg-12">
                                         <div class="form-group">
                                             <button type="submit" class="btn btn-success">Guardar</button>

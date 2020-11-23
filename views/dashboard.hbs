@@ -21,14 +21,14 @@
                             <i class="fa fa-archive fa-5x"></i>
                         </div>
                         <div class="col-xs-9 text-right">
-                            <div class="huge">26</div>
+                            <div class="huge">{{cantidades.stock}}</div>
                             <div>Stock</div>
                         </div>
                     </div>
                 </div>
                 <a href="#">
                     <div class="panel-footer">
-                        <span class="pull-left">Ver detalle</span>
+                        <a class="pull-left" href="/proveedores/listarStock/byDateDesc">Ver detalle</a>
                         <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
 
                         <div class="clearfix"></div>
@@ -44,14 +44,14 @@
                             <i class="fa fa-usd fa-5x"></i>
                         </div>
                         <div class="col-xs-9 text-right">
-                            <div class="huge">12</div>
+                            <div class="huge">{{cantidades.listaPrecio}}</div>
                             <div>Precios</div>
                         </div>
                     </div>
                 </div>
                 <a href="#">
                     <div class="panel-footer">
-                        <span class="pull-left">Ver detalle</span>
+                        <a class="pull-left" href="/listaPrecios/listarPrecios">Ver detalle</a>
                         <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
 
                         <div class="clearfix"></div>
@@ -67,7 +67,7 @@
                             <i class="fa fa-shopping-cart fa-5x"></i>
                         </div>
                         <div class="col-xs-9 text-right">
-                            <div class="huge">124</div>
+                            <div class="huge">{{cantidades.venta}}</div>
                             <div>Ventas</div>
                         </div>
                     </div>
@@ -89,14 +89,14 @@
                             <i class="fa fa-user fa-5x"></i>
                         </div>
                         <div class="col-xs-9 text-right">
-                            <div class="huge">13</div>
+                            <div class="huge">{{cantidades.enrolado}}</div>
                             <div>Enrolados</div>
                         </div>
                     </div>
                 </div>
                 <a href="#">
                     <div class="panel-footer">
-                        <span class="pull-left">Ver detalle</span>
+                        <a class="pull-left" href="/enrolados/listarEnrolados/byDateDesc">Ver detalle</a>
                         <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
 
                         <div class="clearfix"></div>
@@ -115,14 +115,16 @@
                 <!-- /.panel-heading -->
                 <div class="panel-body">
                     <div class="list-group">
-                        <a href="#" class="list-group-item">
-                            <i class="fa fa-bolt fa-fw"></i> Nueva venta
-                            <span class="pull-right text-muted small"><em>4.000 CLP</em>
+                        {{#each ventas}}
+                        <a href="ventas/editar/COMPLETAR" class="list-group-item">
+                            <i class="fa fa-bolt fa-fw"></i> Nueva venta (Químico {{RutQuim_v}})
+                            <span class="pull-right text-muted small"><em>{{HoraVenta}}</em>
                             </span>
                         </a>
+                        {{/each}}
                     </div>
                     <!-- /.list-group -->
-                    <a href="#" class="btn btn-default btn-block">Ver todas</a>
+                    <a href="/ventas/listarVentas/byDateDesc" class="btn btn-default btn-block">Ver todas</a>
                 </div>
                 <!-- /.panel-body -->
             </div>

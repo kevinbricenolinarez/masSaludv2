@@ -49,7 +49,23 @@ app.listen(app.get('port'), () => {
 // MAIN /////////////////////////////////////////////////
 // DASHBOARD [GET]
 app.get('/', function (req, res) {
-    res.render('dashboard.hbs');
+
+    connection.query("SELECT COUNT(*) FROM STOCK;SELECT COUNT(*) FROM LISTAPRECIO;SELECT COUNT(*) FROM VENTAS;SELECT COUNT(*) FROM ENROLADO;SELECT * FROM VENTAS LIMIT 3;", function(error, respuesta, fields) {
+
+        console.log("RESP:", respuesta);
+        console.log("RESP[0]:", respuesta[0][0]['COUNT(*)']);
+
+        console.log(Object.keys(respuesta[0]))
+
+        cantidades = {
+            stock: respuesta[0][0]['COUNT(*)'],
+            listaPrecio: respuesta[1][0]['COUNT(*)'],
+            venta: respuesta[2][0]['COUNT(*)'],
+            enrolado: respuesta[3][0]['COUNT(*)'],
+        }
+
+        res.render('dashboard.hbs', { cantidades, ventas: respuesta[4] });
+    });
 });
 
 // CLIENTES /////////////////////////////////////////////////
@@ -359,7 +375,7 @@ app.get('/ventas/listarVentas/:sort', async function (req, res) {
     })
 });
 
-// LISTAR CLIENTES [POST]
+// LISTAR VENTAS [POST]
 app.post('/ventas/listarVentas', function (req, res) {
     connection.query('SELECT * FROM VENTAS WHERE RutPer_v = "' + req.body.rut + '"', function(error, ventas, fields) {
         if (error) { console.log("FALLO:", error); res.redirect("/errorDetalle/" + error.sqlMessage); return false; };
@@ -370,6 +386,39 @@ app.post('/ventas/listarVentas', function (req, res) {
             console.log("v.FechaVentaBonita =", v.FechaVentaBonita);
         })
         res.render('ventas/listarVentas.hbs', { ventas });
+    })
+});
+
+// EDITAR VENTAS [GET]
+app.get('/ventas/editar/:RutPer_v/:FechaVenta/:HoraVenta', function(req, res) {
+    connection.query(`SELECT * FROM FORMATO; SELECT * FROM PRESENTACION; SELECT * FROM TIPOMEDIC; SELECT * FROM DESCUENTO; SELECT * FROM MEDICAMENTO; 
+                    SELECT * FROM VENTAS WHERE RutPer_v = ${req.params.RutPer_v} AND FechaVenta = '${req.params.FechaVenta}' AND HoraVenta = '${req.params.HoraVenta}';`, function(error, respuesta, fields) {
+        
+        if (error) { console.log("FALLO:", error); res.redirect("/errorDetalle/" + error.sqlMessage); return false; };
+        console.log("respuesta[0] =", respuesta[0]);
+
+        data = {
+            formatos: respuesta[0],
+            presentaciones: respuesta[1],
+            tipos: respuesta[2],
+            descuentos: respuesta[3],
+            medicamentos: respuesta[4],
+        }
+
+        let venta = respuesta[5][0];
+        venta.FechaVenta =  venta.FechaVenta.getFullYear() + "-" + (venta.FechaVenta.getMonth() + 1) + "-" + venta.FechaVenta.getDate();
+
+        res.render('ventas/actualizarVenta.hbs', { data, venta });
+    })
+})
+
+// ACTUALIZAR VENTAS [POST]
+app.post('/ventas/editar', function (req, res) {
+    connection.query(`UPDATE VENTAS SET IdMed_v = ${req.body.IdMed_v}, TipoFormato_v = '${req.body.TipoFormato_v}', TipoPresentacion_v = '${req.body.TipoPresentacion_v}', TipoVenta = '${req.body.TipoVenta}' WHERE RutPer_v = ${req.body.RutPer_v} AND FechaVenta = '${req.body.FechaVenta}' AND HoraVenta = '${req.body.HoraVenta}';`, function(error, respuesta, fields) {
+        
+        if (error) { console.log("FALLO:", error); res.redirect("/errorDetalle/" + error.sqlMessage); return false; };
+        console.log("Venta actualizada");
+        res.redirect('/ventas/listarVentas/byDateDesc');
     })
 });
 
@@ -419,7 +468,6 @@ app.get('/medicamentos/editar/:IdMed', function(req, res) {
         res.render('medicamentos/actualizarMeds.hbs', { IdMed: medicamentoEncontrado.IdMed, NomMed: medicamentoEncontrado.NomMed });
     })
 })
-
 
 // ACTUALIZAR MEDICAMENTOS [POST]
 app.post('/medicamentos/editar', function (req, res) {
@@ -683,17 +731,17 @@ app.get('/sucursales/listarSucur', function (req, res) {
 
 // EDITAR SUCUR [GET]
 app.get('/sucursales/editar/:IdSucursal', function(req, res) {
-    connection.query('SELECT * FROM SUCURSAL WHERE IdSucursal = ' + req.params.IdSucursal, function(error, sucursal, fields) {
+    connection.query('SELECT * FROM MUNICIPIO; SELECT * FROM SUCURSAL WHERE IdSucursal = ' + req.params.IdSucursal, function(error, respuesta, fields) {
         if (error) { console.log("FALLO:", error); res.redirect("/errorDetalle/" + error.sqlMessage); return false; };
-        console.log("Encontrada la sucursal", sucursal);
+        console.log("Encontrada la sucursal", respuesta[1]);
 
-        res.render('sucursales/actualizarSucur.hbs', { sucursal: sucursal[0] });
+        res.render('sucursales/actualizarSucur.hbs', { municipios: respuesta[0], sucursal: respuesta[1][0] });
     })
 })
 
 // ACTUALIZAR SUCUR [POST]
 app.post('/sucursales/editar', function (req, res) {
-    connection.query("UPDATE SUCURSAL SET NombreSucursal = '" + req.body.NombreSucursal + "' WHERE IdSucursal = " + req.body.IdSucursal + ";", function(error, respuesta, fields) {
+    connection.query("UPDATE SUCURSAL SET NombreSucursal = '" + req.body.NombreSucursal + "', IdMuni_s = '" + req.body.IdMuni_s + "' WHERE IdSucursal = " + req.body.IdSucursal + ";", function(error, respuesta, fields) {
         if (error) { console.log("FALLO:", error); res.redirect("/errorDetalle/" + error.sqlMessage); return false; };
         console.log("Actualizada la sucursal");
 
