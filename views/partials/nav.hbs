@@ -28,17 +28,6 @@
     <div class="navbar-default sidebar" role="navigation">
         <div class="sidebar-nav navbar-collapse">
             <ul class="nav" id="side-menu">
-                <li class="sidebar-search">
-                    <div class="input-group custom-search-form">
-                        <input type="text" class="form-control" placeholder="Buscar...">
-                        <span class="input-group-btn">
-                            <button class="btn btn-primary" type="button">
-                                <i class="fa fa-search"></i>
-                            </button>
-                        </span>
-                    </div>
-                    <!-- /input-group -->
-                </li>
                 <li>
                     <a href="/" class="active"><i class="fa fa-ambulance fa-fw"></i> Farmacias municipales</a>
                 </li>
@@ -94,16 +83,16 @@
                     <a href="#"><i class="fa fa-user fa-fw"></i>Gestión Personas<span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
                         <li>
-                            <a href="/clientes/agregarCliente" class="done">Registrar Cliente</a>
+                            <a href="/clientes/agregarCliente">Registrar Cliente</a>
                         </li>
                         <li>
-                            <a href="/quimicos/agregarQuimicoFarm" class="done">Registrar Químico</a>
+                            <a href="/quimicos/agregarQuimicoFarm">Registrar Químico</a>
                         </li>
                         <li>
                             <a href="/medicos/agregarMedico">Registrar Médico</a>
                         </li>
                         <li>
-                            <a href="/clientes/listarClientes/byList" class="done">Listar Clientes</a>
+                            <a href="/clientes/listarClientes/byList">Listar Clientes</a>
                         </li>
                         <li>
                             <a href="/quimicos/listarQuimicos/byList">Listar Químicos</a>
@@ -146,6 +135,21 @@
                         </li>
                         <li>
                             <a href="/stock/listarStock/byDateDesc"> Listar Stock</a>
+                        </li>
+                    </ul>
+                    <!-- /.nav-second-level -->
+                </li>
+                <li>
+
+                   </li>
+                <li>
+                    <a href="#"><i class="fa fa-calendar"></i> Vencimiento<span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a href="/vencimiento/agregarVencimiento"> Registrar Vencimiento</a>
+                        </li>
+                        <li>
+                            <a href="/vencimiento/listarVencimiento/byDateDesc"> Listar Vencimiento</a>
                         </li>
                     </ul>
                     <!-- /.nav-second-level -->

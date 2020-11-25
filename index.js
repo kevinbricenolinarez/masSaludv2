@@ -50,21 +50,36 @@ app.listen(app.get('port'), () => {
 // DASHBOARD [GET]
 app.get('/', function (req, res) {
 
-    connection.query("SELECT COUNT(*) FROM STOCK;SELECT COUNT(*) FROM LISTAPRECIO;SELECT COUNT(*) FROM VENTAS;SELECT COUNT(*) FROM ENROLADO;SELECT * FROM VENTAS LIMIT 3;", function(error, respuesta, fields) {
+    connection.query(`SELECT COUNT(*) FROM STOCK;SELECT COUNT(*) FROM LISTAPRECIO;SELECT COUNT(*) FROM VENTAS;SELECT COUNT(*) FROM ENROLADO;SELECT * FROM VENTAS LIMIT 3;
+    
+    SELECT FechaVencimiento, Unidades, IdLote_v, IdProv_v
+    FROM VENCIMIENTO WHERE DATEDIFF(FechaVencimiento, CURRENT_TIMESTAMP()) > 0 AND DATEDIFF(FechaVencimiento, CURRENT_TIMESTAMP()) <= 5;
+    
+    `, function(error, respuesta, fields) {
 
         console.log("RESP:", respuesta);
         console.log("RESP[0]:", respuesta[0][0]['COUNT(*)']);
 
         console.log(Object.keys(respuesta[0]))
 
-        cantidades = {
+        let cantidades = {
             stock: respuesta[0][0]['COUNT(*)'],
             listaPrecio: respuesta[1][0]['COUNT(*)'],
             venta: respuesta[2][0]['COUNT(*)'],
             enrolado: respuesta[3][0]['COUNT(*)'],
         }
 
-        res.render('dashboard.hbs', { cantidades, ventas: respuesta[4] });
+        let proximosVencimientos = respuesta[5];
+
+        proximosVencimientos.forEach((v) => {
+            // FORMATO BONITO
+            v.FechaVencimientoBonita =  v.FechaVencimiento.getDate() + "-" + (v.FechaVencimiento.getMonth() + 1) + "-" + v.FechaVencimiento.getFullYear();
+            console.log("v.FechaVencimientoBonita =", v.FechaVencimientoBonita);
+        })
+
+        console.log(proximosVencimientos);
+
+        res.render('dashboard.hbs', { cantidades, ventas: respuesta[4], proximosVencimientos });
     });
 });
 
@@ -601,7 +616,18 @@ app.get('/stock/agregarStock', function (req, res) {
 //AGREGAR STOCK [POST]
 app.post('/stock/agregarStock', function (req, res) {
     connection.query(`insert into LOTE (IdLote,IdProv_l) values('${req.body.IdLote_s}','${req.body.IdProv_s}' ); insert into STOCK (IdProv_s, IdMed_s, TipoPresentacion_s, TipoFormato_s,Cantidad, FechaLlegadaStock, IdLote_s) values ('${req.body.IdProv_s}', '${req.body.IdMed_s}',  '${req.body.TipoPresentacion_s}', '${req.body.TipoFormato_s}','${req.body.Cantidad}','${req.body.FechaLlegadaStock}','${req.body.IdLote_s}');`, function(error, respuesta, fields) {
-        if (error) { console.log("FALLO:", error); res.redirect("/errorDetalle/" + error.sqlMessage); return false; };
+        if (error) { 
+            if (error.code = 'ER_DUP_ENTRY') {
+                connection.query(`insert into STOCK (IdProv_s, IdMed_s, TipoPresentacion_s, TipoFormato_s,Cantidad, FechaLlegadaStock, IdLote_s) values ('${req.body.IdProv_s}', '${req.body.IdMed_s}',  '${req.body.TipoPresentacion_s}', '${req.body.TipoFormato_s}','${req.body.Cantidad}','${req.body.FechaLlegadaStock}','${req.body.IdLote_s}');`, function(error, respuesta, fields) {
+                    if (error) { console.log("FALLO:", error); res.redirect("/errorDetalle/" + error.sqlMessage); return false; };
+                    console.log("RESP:", respuesta);
+                    console.log("Agregado el registro del stock");
+                    res.redirect('/stock/listarStock/byDateDesc');
+                    return false;
+                })
+            }
+            return false;
+        };
         console.log("RESP:", respuesta);
         console.log("Agregado el registro del stock");
         res.redirect('/stock/listarStock/byDateDesc');
@@ -638,6 +664,7 @@ app.get('/stock/listarStock/:sort', async function (req, res) {
 });
 
 //ELIMINAR STOCK [GET]
+/*
 app.get('/stock/eliminar/:FechaLlegadaStock/:TipoPresentacion_s/:TipoFormato_s/:IdLote_s/:IdMed_s/:IdProv_s', function(req, res) {
     connection.query('DELETE FROM STOCK WHERE FechaLlegadaStock = "' + req.params.FechaLlegadaStock + '" AND TipoPresentacion_s = "' + req.params.TipoPresentacion_s + '" AND TipoFormato_s = "' + req.params.TipoFormato_s + '" AND IdMed_s = ' + req.params.IdMed_s + ' AND IdLote_s = ' + req.params.IdLote_s + ' AND IdProv_s = ' + req.params.IdProv_s, function(error, respuesta, fields) {
         if (error) { console.log("FALLO:", error); res.redirect("/errorDetalle/" + error.sqlMessage); return false; };
@@ -645,6 +672,7 @@ app.get('/stock/eliminar/:FechaLlegadaStock/:TipoPresentacion_s/:TipoFormato_s/:
         res.redirect('/stock/listarStock/byDateDesc');
     })
 })
+*/
 
 // EDITAR STOCK [GET]
 app.get('/stock/editar/:IdProv_s/:IdMed_s/:IdLote_s', function(req, res) {
@@ -688,6 +716,100 @@ app.get('/stock/eliminar/:IdProv_s/:IdMed_s/:IdLote_s', function(req, res) {
         if (error) { console.log("FALLO:", error); res.redirect("/errorDetalle/" + error.sqlMessage); return false; };
         console.log("Eliminado el stock");
         res.redirect('/stock/listarStock/byDateDesc');
+    })
+})
+
+///////////////////////// VENCIMIENTO
+//AGREGAR VENCIMIENTO [GET]
+app.get('/vencimiento/agregarVencimiento', function (req, res) {
+    connection.query("SELECT * FROM PROVEEDOR;", function(error, respuesta, fields) {  
+        if (error) { console.log("FALLO:", error); res.redirect("/errorDetalle/" + error.sqlMessage); return false; };
+        console.log("Proveedores encontrados:", respuesta)
+        
+        res.render('vencimiento/agregarVencimiento.hbs', { proveedores: respuesta });  
+    })  
+});
+
+//AGREGAR VENCIMIENTO [POST]
+app.post('/vencimiento/agregarVencimiento', function (req, res) {
+
+    connection.query('SELECT * FROM LOTE WHERE IdLote = ' + req.body.IdLote_v, function(error, respuesta, fields) {
+        if (error) { console.log("FALLO:", error); res.redirect("/errorDetalle/" + error.sqlMessage); return false; };
+        console.log("RESP:", respuesta);
+        let lote = respuesta[0];
+        let IdProv_l = lote.IdProv_l;
+
+        connection.query(`insert into VENCIMIENTO (FechaVencimiento, Unidades, IdLote_v, IdProv_v) values('${req.body.FechaVencimiento}', ${req.body.Unidades}, ${req.body.IdLote_v}, ${IdProv_l});`, function(error, respuesta, fields) {
+            if (error) { console.log("FALLO:", error); res.redirect("/errorDetalle/" + error.sqlMessage); return false; };
+            console.log("RESP:", respuesta);
+            console.log("Agregado el registro de vencimiento");
+            res.redirect('/vencimiento/listarVencimiento/byDateDesc');
+        })
+
+    })
+});
+
+//LISTAR VENCIMIENTO [GET]
+app.get('/vencimiento/listarVencimiento/:sort', async function (req, res) {
+
+    let consulta = "";
+    if (req.params.sort == "byDateDesc") {
+        consulta = "SELECT * FROM VENCIMIENTO ORDER BY FechaVencimiento DESC";
+    }
+    else if (req.params.sort == "byDateAsc") {
+        consulta = "SELECT * FROM VENCIMIENTO ORDER BY FechaVencimiento ASC";
+    }    
+
+    connection.query(consulta, function(error, vencimiento, fields) { 
+        console.log("VENCIMIENTO ENCONTRADO:", vencimiento);
+
+        vencimiento.forEach((v) => {
+            // FORMATO BONITO
+            v.FechaVencimientoBonita =  v.FechaVencimiento.getDate() + "-" + (v.FechaVencimiento.getMonth() + 1) + "-" + v.FechaVencimiento.getFullYear();
+            console.log("v.FechaVencimientoBonita =", v.FechaVencimientoBonita);
+            
+            // FORMATO PARA ENVIAR A DB
+            v.FechaVencimiento =  v.FechaVencimiento.getFullYear() + "-" + (v.FechaVencimiento.getMonth() + 1) + "-" + v.FechaVencimiento.getDate();
+            console.log("v.FechaVencimiento =", v.FechaVencimiento);
+
+        })
+
+        res.render('vencimiento/listarVencimiento.hbs', { vencimiento });
+    })
+});
+
+// EDITAR VENCIMIENTO [GET]
+app.get('/vencimiento/editar/:FechaVencimiento/:IdLote_v/:IdProv_v', function(req, res) {
+    connection.query(`SELECT * FROM PROVEEDOR;
+                    SELECT * FROM VENCIMIENTO WHERE FechaVencimiento = '${req.params.FechaVencimiento}' AND IdLote_v = ${req.params.IdLote_v} AND IdProv_v = ${req.params.IdProv_v};`, function(error, respuesta, fields) {
+        
+        if (error) { console.log("FALLO:", error); res.redirect("/errorDetalle/" + error.sqlMessage); return false; };
+        console.log("respuesta =", respuesta);
+
+        let vencimiento = respuesta[1][0];
+        vencimiento.FechaVencimiento =  vencimiento.FechaVencimiento.getFullYear() + "-" + (vencimiento.FechaVencimiento.getMonth() + 1) + "-" + vencimiento.FechaVencimiento.getDate();
+
+        res.render('vencimiento/actualizarVencimiento.hbs', { proveedores: respuesta[0], vencimiento });
+    })
+})
+
+// ACTUALIZAR VENCIMIENTO [POST]
+app.post('/vencimiento/editar', function (req, res) {
+    connection.query(`UPDATE VENCIMIENTO SET FechaVencimiento = '${req.body.FechaVencimiento}', IdProv_v = ${req.body.IdProv_v}, Unidades = ${req.body.Unidades} WHERE FechaVencimiento = '${req.body.FechaVencimiento_Old}' AND IdLote_v = ${req.body.IdLote_v} AND IdProv_v = ${req.body.IdProv_v_Old};`, function(error, respuesta, fields) {
+        if (error) { console.log("FALLO:", error); res.redirect("/errorDetalle/" + error.sqlMessage); return false; };
+        console.log("Vencimiento actualizado");
+        res.redirect('/vencimiento/listarVencimiento/byDateDesc');
+    })
+});
+
+// ELIMINAR VENCIMIENTO [GET]
+app.get('/vencimiento/eliminar/:FechaVencimiento/:IdLote_v/:IdProv_v', function(req, res) {
+    let consulta = `DELETE FROM VENCIMIENTO WHERE FechaVencimiento = '${req.params.FechaVencimiento}' AND IdLote_v = ${req.params.IdLote_v} AND IdProv_v = ${req.params.IdProv_v};`;
+    console.log(consulta);
+    connection.query(consulta, function(error, respuesta, fields) {
+        if (error) { console.log("FALLO:", error); res.redirect("/errorDetalle/" + error.sqlMessage); return false; };
+        console.log("Eliminado el vencimiento");
+        res.redirect('/vencimiento/listarVencimiento/byDateDesc');
     })
 })
 
@@ -751,7 +873,7 @@ app.get('/listaPrecios/listarPrecios/:sort', async function (req, res) {
         sortBy = 'ORDER BY Precio DESC';
     }
     
-    connection.query("select * from medicamento, listaprecio where medicamento.idmed = listaprecio.idmed_l " + sortBy, function(error, precios, fields) { 
+    connection.query("select * from medicamento, listaprecio where medicamento.idmed = listaprecio.idmed_l" + sortBy, function(error, precios, fields) { 
         if (error) { console.log("FALLO:", error); res.redirect("/errorDetalle/" + error.sqlMessage); return false; };
         console.log("RESP:", precios);
         res.render('listaPrecios/listarPrecios.hbs', { precios });

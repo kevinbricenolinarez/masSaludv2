@@ -28,7 +28,7 @@
                 </div>
                 <a href="#">
                     <div class="panel-footer">
-                        <a class="pull-left" href="/proveedores/listarStock/byDateDesc">Ver detalle</a>
+                        <a class="pull-left" href="/stock/listarStock/byDateDesc">Ver detalle</a>
                         <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
 
                         <div class="clearfix"></div>
@@ -51,7 +51,7 @@
                 </div>
                 <a href="#">
                     <div class="panel-footer">
-                        <a class="pull-left" href="/listaPrecios/listarPrecios">Ver detalle</a>
+                        <a class="pull-left" href="/listaPrecios/listarPrecios/byList">Ver detalle</a>
                         <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
 
                         <div class="clearfix"></div>
@@ -107,7 +107,7 @@
     </div>
     <!-- /.row -->
     <div class="row">
-        <div class="col-lg-12">
+        <div class="col-lg-6">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <i class="fa fa-bell fa-fw"></i> Ventas
@@ -125,6 +125,30 @@
                     </div>
                     <!-- /.list-group -->
                     <a href="/ventas/listarVentas/byDateDesc" class="btn btn-default btn-block">Ver todas</a>
+                </div>
+                <!-- /.panel-body -->
+            </div>
+            <!-- /.panel -->
+        </div>
+        <!-- /.col-lg-4 -->
+        <div class="col-lg-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <i class="fa fa-bell fa-fw"></i> Vencimiento de medicamentos
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div class="list-group">
+                        {{#each proximosVencimientos}}
+                        <a class="list-group-item">
+                            <i class="fa fa-bolt fa-fw"></i> A vencer el {{FechaVencimientoBonita}} del lote {{IdLote_v}}
+                            <span class="pull-right text-muted small"><em>{{Unidades}}</em>
+                            </span>
+                        </a>
+                        {{/each}}
+                    </div>
+                    <!-- /.list-group -->
+                    <a href="/vencimiento/listarVencimiento/byDateDesc" class="btn btn-default btn-block">Ver todas</a>
                 </div>
                 <!-- /.panel-body -->
             </div>
