@@ -762,6 +762,11 @@ app.post('/vencimiento/agregarVencimiento', function (req, res) {
     connection.query('SELECT * FROM LOTE WHERE IdLote = ' + req.body.IdLote_v, function(error, respuesta, fields) {
         if (error) { console.log("FALLO:", error); res.redirect("/errorDetalle/" + error.sqlMessage); return false; };
         console.log("RESP:", respuesta);
+
+        if (respuesta.length < 1) {
+            console.log("FALLO:", error); res.redirect("/errorDetalle/" + 'El lote no existe'); return false;
+        }
+
         let lote = respuesta[0];
         let IdProv_l = lote.IdProv_l;
 
