@@ -79,7 +79,16 @@ app.get('/', function (req, res) {
 
         console.log(proximosVencimientos);
 
-        res.render('dashboard.hbs', { cantidades, ventas: respuesta[4], proximosVencimientos });
+        let ventas = respuesta[4];
+
+        ventas.forEach((v) => {
+            v.FechaVentaBonita =  v.FechaVenta.getDate() + "-" + (v.FechaVenta.getMonth() + 1) + "-" + v.FechaVenta.getFullYear();
+            v.FechaVenta =  v.FechaVenta.getFullYear() + "-" + (v.FechaVenta.getMonth() + 1) + "-" + v.FechaVenta.getDate();
+            console.log("v.FechaVenta =", v.FechaVenta);
+            console.log("v.FechaVentaBonita =", v.FechaVentaBonita);
+        })
+
+        res.render('dashboard.hbs', { cantidades, ventas, proximosVencimientos });
     });
 });
 
@@ -213,10 +222,18 @@ app.get('/quimicos/listarQuimicos/:sort', function (req, res) {
         quimicos.forEach((q) => {
             let rutQuimicString = q.RutQuimic.toString();
             rutQuimicString = rutQuimicString.substring(0, (rutQuimicString.length-1)) + "-" + rutQuimicString[rutQuimicString.length-1];
-    
             q.RutQuimic_Bonito = rutQuimicString;
         })
 
+        res.render('personas/quimicos/listarQuimicos.hbs', { quimicos });
+    })
+});
+
+// LISTAR QUÍMICOS [POST]
+app.post('/quimicos/listarQuimicos', function (req, res) {
+    connection.query('SELECT * FROM QUIMICOFARMAC WHERE RutQuimic = ' + req.body.rut + ';', function(error, quimicos, fields) {
+        if (error) { console.log("FALLO:", error); res.redirect("/errorDetalle/" + error.sqlMessage); return false; };
+        console.log("The solution is: ", quimicos);
         res.render('personas/quimicos/listarQuimicos.hbs', { quimicos });
     })
 });
@@ -296,6 +313,15 @@ app.get('/medicos/listarMedicos/:sort', function (req, res) {
             m.RutMed_Bonito = rutMedString;
         })
 
+        res.render('personas/medicos/listarMedicos.hbs', { medicos });
+    })
+});
+
+// LISTAR MEDICOS [POST]
+app.post('/medicos/listarMedicos', function (req, res) {
+    connection.query('SELECT * FROM MEDICO WHERE RutMed = "' + req.body.rut + '"', function(error, medicos, fields) {
+        if (error) { console.log("FALLO:", error); res.redirect("/errorDetalle/" + error.sqlMessage); return false; };
+        console.log("The solution is: ", medicos);
         res.render('personas/medicos/listarMedicos.hbs', { medicos });
     })
 });

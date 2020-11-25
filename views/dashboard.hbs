@@ -116,7 +116,7 @@
                 <div class="panel-body">
                     <div class="list-group">
                         {{#each ventas}}
-                        <a href="ventas/editar/COMPLETAR" class="list-group-item">
+                        <a href="ventas/editar/{{RutPer_v}}/{{FechaVenta}}/{{HoraVenta}}" class="list-group-item">
                             <i class="fa fa-bolt fa-fw"></i> Nueva venta (Químico {{RutQuim_v}})
                             <span class="pull-right text-muted small"><em>{{HoraVenta}}</em>
                             </span>
@@ -134,7 +134,7 @@
         <div class="col-lg-6">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <i class="fa fa-bell fa-fw"></i> Vencimiento de medicamentos
+                    <i class="fa fa-calendar fa-fw"></i> Vencimiento de medicamentos
                 </div>
                 <!-- /.panel-heading -->
                 <div class="panel-body">
@@ -142,7 +142,7 @@
                         {{#each proximosVencimientos}}
                         <a class="list-group-item">
                             <i class="fa fa-bolt fa-fw"></i> A vencer el {{FechaVencimientoBonita}} del lote {{IdLote_v}}
-                            <span class="pull-right text-muted small"><em>{{Unidades}}</em>
+                            <span class="pull-right text-muted small"><em>{{Unidades}} Unidades</em>
                             </span>
                         </a>
                         {{/each}}

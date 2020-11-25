@@ -29,7 +29,7 @@
                                     <div class="col-lg-4">
                                         <div class="form-group">
                                             <label>Municipio</label>
-                                            <select class="form-control" name="IdMuni_s" maxlength="20" required>
+                                            <select class="form-control" name="IdMuni_s" maxlength="255" required>
                                                 {{#each municipios}}
                                                 <option value="{{IdMuni}}">{{IdMuni}} - {{NombreMunic}}</option>
                                                 {{/each}}
@@ -40,7 +40,7 @@
                                     <div class="col-lg-4">
                                         <div class="form-group">
                                             <label>Nombre Sucursal</label>
-                                            <input id="nomsuc" class="form-control" required maxlength="20" name="NombreSucursal" value="{{NombreSucursal}}">
+                                            <input id="nomsuc" class="form-control" required maxlength="255" name="NombreSucursal" value="{{NombreSucursal}}">
                                         </div>
                                     </div>
                                 
