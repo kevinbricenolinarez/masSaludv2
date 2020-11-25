@@ -960,7 +960,7 @@ app.post('/sucursales/agregarSucur', function (req, res) {
         if (error) { console.log("FALLO:", error); res.redirect("/errorDetalle/" + error.sqlMessage); return false; };
         console.log("RESP:", respuesta);
         console.log("Agregada la sucursal");
-        res.redirect('/sucursales/listarSucur');
+        res.redirect('/sucursales/listarSucur/byNomAZ');
     })
 });
 
@@ -998,17 +998,16 @@ app.post('/sucursales/editar', function (req, res) {
         if (error) { console.log("FALLO:", error); res.redirect("/errorDetalle/" + error.sqlMessage); return false; };
         console.log("Actualizada la sucursal");
 
-        res.redirect('/sucursales/listarSucur');
+        res.redirect('/sucursales/listarSucur/byNomAZ');
     })
 });
 
 // ELIMINAR SUCUR [GET]
-app.get('/clientes/eliminar/:RutPer', function(req, res) {
-    let rutPersona = req.params.RutPer;
-    connection.query('DELETE FROM Persona WHERE RutPer = ' + rutPersona, function(error, respuesta, fields) {
+app.get('/sucursales/eliminar/:IdSucursal', function(req, res) {
+    connection.query('DELETE FROM SUCURSAL WHERE IdSucursal = ' + req.params.IdSucursal, function(error, respuesta, fields) {
         if (error) { console.log("FALLO:", error); res.redirect("/errorDetalle/" + error.sqlMessage); return false; };
-        console.log("Eliminado el cliente");
-        res.redirect('/clientes/listarClientes/byList');
+        console.log("Eliminada la sucursal");
+        res.redirect('/sucursales/listarSucur/byNomAZ');
     })
 })
 
