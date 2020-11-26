@@ -904,7 +904,7 @@ app.get('/listaPrecios/listarPrecios/:sort', async function (req, res) {
         sortBy = 'ORDER BY Precio DESC';
     }
     
-    connection.query("select * from medicamento, listaprecio where medicamento.idmed = listaprecio.idmed_l" + sortBy, function(error, precios, fields) { 
+    connection.query("select * from medicamento, listaprecio where medicamento.idmed = listaprecio.idmed_l " + sortBy, function(error, precios, fields) { 
         if (error) { console.log("FALLO:", error); res.redirect("/errorDetalle/" + error.sqlMessage); return false; };
         console.log("RESP:", precios);
         res.render('listaPrecios/listarPrecios.hbs', { precios });
